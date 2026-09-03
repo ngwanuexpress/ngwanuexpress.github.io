@@ -334,10 +334,7 @@ const WHATSAPP_NUMBER = "2348118494314";
 const CONTACT_PHONE = "+234 811 849 4314";
 const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const CUSTOMER_SITE_URL = "../";
-/* ONLINE APPLICATION ENDPOINT — use the SAME Google Apps Script Web App URL as the
-   customer site (both bookings + applications land in one sheet; "type" tells them
-   apart). Leave "" to fall back to WhatsApp. */
-const FORM_ENDPOINT = "";
+const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
 function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
 function openWhatsApp(url){ var win = window.open(url, "_blank"); if(!win || win.closed || typeof win.closed === "undefined"){ window.location.href = url; } }
 function makeRef(prefix){ return prefix + "-" + Date.now().toString().slice(-6); }
