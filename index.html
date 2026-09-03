@@ -265,8 +265,8 @@ section{padding:92px 0;border-top:1px solid var(--line)}
         <label for="itemType">Item type</label>
         <select id="itemType" name="itemType"><option value="Food">Food</option><option value="Parcel">Parcel</option><option value="Document">Document</option><option value="Grocery">Grocery</option></select>
       </div>
-      <div class="estimate"><span>Estimated fare</span><b id="priceValue">₦800 – ₦1,500</b></div>
-      <p class="form-note">Typical fare for a short city trip. Your rider confirms the final price before pickup.</p>
+      <div class="estimate"><span>Estimated fare</span><b id="priceValue">Enter both addresses</b></div>
+      <p class="form-note" id="priceNote">Pick your pickup and drop-off from the suggestions and we’ll work out the fare from the distance. Your rider confirms the final price before pickup.</p>
       <button type="submit" class="btn btn--block" id="bookSubmitBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Request Rider</button>
       <p class="error-text" id="formError">Please fill your name, phone, and both addresses.</p>
       <p class="alt-line">Prefer WhatsApp? <a id="bookWhatsAppLink">Send this booking on WhatsApp instead</a></p>
@@ -351,15 +351,20 @@ const CONTACT_PHONE = "+234 811 849 4314";
 const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const RIDER_SITE_URL = "ride/";
 const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
-const PRICING = { base: 800, spread: 700, Food: 0, Parcel: 300, Document: 0, Grocery: 600 };
+const PRICING = { base:900, freeKm:2, perKm:150, minFare:900, roundTo:50, rangePct:0.10, roadFactor:1.4, surcharge:{Food:200,Parcel:200,Document:0,Grocery:400} };
+const OSRM = "https://router.project-osrm.org/route/v1/driving/";
 const LAGOS_BBOX = "2.70,6.35,4.35,6.78";
 const LAGOS_CENTRE = { lat: 6.5244, lon: 3.3792 };
 const GEO = {
   search: function(q){ return "https://photon.komoot.io/api/?q=" + encodeURIComponent(q) + "&lang=en&limit=6&lat=" + LAGOS_CENTRE.lat + "&lon=" + LAGOS_CENTRE.lon + "&bbox=" + LAGOS_BBOX; },
   reverse: function(lat, lon){ return "https://photon.komoot.io/reverse/?lat=" + lat + "&lon=" + lon + "&lang=en"; }
 };
-const naira = n => "₦" + n.toLocaleString("en-NG");
-function computeEstimate(t){ const e = PRICING[t]||0, low = PRICING.base+e, high = low+PRICING.spread; return { low, high, label: naira(low)+" – "+naira(high) }; }
+const naira = n => "₦" + Math.round(n).toLocaleString("en-NG");
+function haversineKm(a,b){ const p1=a.split(",").map(Number), p2=b.split(",").map(Number); const R=6371, toRad=d=>d*Math.PI/180; const dLat=toRad(p2[0]-p1[0]), dLon=toRad(p2[1]-p1[1]); const h=Math.sin(dLat/2)**2+Math.cos(toRad(p1[0]))*Math.cos(toRad(p2[0]))*Math.sin(dLon/2)**2; return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)); }
+const _distCache = {};
+function distanceKm(){ const a=pinCoords.pickup, b=pinCoords.dropoff; if(!a||!b) return Promise.resolve(null); const key=a+"|"+b; if(_distCache[key]!=null) return Promise.resolve(_distCache[key]); const straight=haversineKm(a,b); const p1=a.split(","), p2=b.split(","); const url=OSRM+p1[1]+","+p1[0]+";"+p2[1]+","+p2[0]+"?overview=false"; return fetch(url).then(r=>r.json()).then(function(d){ let km; if(d&&d.code==="Ok"&&d.routes&&d.routes[0]) km=d.routes[0].distance/1000; else km=straight*PRICING.roadFactor; _distCache[key]=km; return km; }).catch(function(){ const km=straight*PRICING.roadFactor; _distCache[key]=km; return km; }); }
+function fareForKm(km,item){ const extra=Math.max(0,km-PRICING.freeKm); let f=PRICING.base+extra*PRICING.perKm+(PRICING.surcharge[item]||0); f=Math.max(f,PRICING.minFare); return Math.round(f/PRICING.roundTo)*PRICING.roundTo; }
+function rangeLabel(f){ const lo=Math.round(f*(1-PRICING.rangePct)/PRICING.roundTo)*PRICING.roundTo; const hi=Math.round(f*(1+PRICING.rangePct)/PRICING.roundTo)*PRICING.roundTo; return naira(lo)+" – "+naira(hi); }
 function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
 function openWhatsApp(url){ var win = window.open(url, "_blank"); if(!win || win.closed || typeof win.closed === "undefined"){ window.location.href = url; } }
 function makeRef(prefix){ return prefix + "-" + Date.now().toString().slice(-6); }
@@ -373,9 +378,14 @@ document.getElementById("footerEmail").textContent = CONTACT_EMAIL;
 document.getElementById("footerEmail").setAttribute("href", "mailto:" + CONTACT_EMAIL);
 const itemTypeEl = document.getElementById("itemType");
 const priceValueEl = document.getElementById("priceValue");
-function refreshPrice(){ priceValueEl.textContent = computeEstimate(itemTypeEl.value).label; }
-itemTypeEl.addEventListener("change", refreshPrice); refreshPrice();
+const priceNoteEl = document.getElementById("priceNote");
+const NOTE_DEFAULT = priceNoteEl ? priceNoteEl.textContent : "";
+let fareState = { label: "", km: null };
+let estSeq = 0;
+function refreshPrice(){ const seq = ++estSeq; const item = itemTypeEl.value; if(!pinCoords.pickup || !pinCoords.dropoff){ fareState = { label:"", km:null }; priceValueEl.textContent = "Enter both addresses"; if(priceNoteEl) priceNoteEl.textContent = NOTE_DEFAULT; return; } priceValueEl.textContent = "Calculating…"; distanceKm().then(function(km){ if(seq !== estSeq) return; if(km == null){ priceValueEl.textContent = "Enter both addresses"; return; } const fare = fareForKm(km, item); fareState = { label: rangeLabel(fare), km: km }; priceValueEl.textContent = fareState.label; if(priceNoteEl) priceNoteEl.textContent = "About " + km.toFixed(1) + " km" + (PRICING.surcharge[item] ? " · includes " + item.toLowerCase() + " handling" : "") + ". Your rider confirms the final price before pickup."; }); }
+itemTypeEl.addEventListener("change", refreshPrice);
 const pinCoords = { pickup: null, dropoff: null };
+refreshPrice();
 function formatAddr(pr){
   if(!pr) return "Selected location";
   var first = [];
@@ -407,11 +417,12 @@ function attachAutocomplete(target){
       const link = "https://maps.google.com/?q=" + pinCoords[target];
       status.innerHTML = '📍 Address pinned — <a href="' + link + '" target="_blank" rel="noopener">view on map</a>'; }
     close();
+    refreshPrice();
   }
   const run = debounce(function(){
     const q = input.value.trim();
     if(q.length < 3){ close(); return; }
-    pinCoords[target] = null; status.textContent = "";
+    if(pinCoords[target]){ pinCoords[target] = null; refreshPrice(); } status.textContent = "";
     geoSearch(q).then(function(r){ feats = r; active = -1; paint(); }).catch(function(){ close(); });
   }, 320);
   input.addEventListener("input", run);
@@ -443,6 +454,7 @@ document.querySelectorAll(".loc-btn").forEach(function(btn){
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
       pinCoords[target] = lat + "," + lng;
+      refreshPrice();
       const link = "https://maps.google.com/?q=" + pinCoords[target];
       statusEl.innerHTML = '📍 Location captured — <a href="' + link + '" target="_blank" rel="noopener">view on map</a>. Finding address…';
       geoReverse(lat, lng).then(function(addr){
@@ -461,7 +473,7 @@ const bookSubmitBtn = document.getElementById("bookSubmitBtn");
 const bookingDone = document.getElementById("bookingDone");
 function buildPayload(){
   const item = itemTypeEl.value;
-  return { type:"booking", ref:makeRef("NGX"), name:document.getElementById("custName").value.trim(), phone:document.getElementById("custPhone").value.trim(), pickup:document.getElementById("pickup").value.trim(), dropoff:document.getElementById("dropoff").value.trim(), pickupCoords:pinCoords.pickup||"", dropoffCoords:pinCoords.dropoff||"", item:item, estimate:computeEstimate(item).label, at:new Date().toISOString(), source:"website" };
+  return { type:"booking", ref:makeRef("NGX"), name:document.getElementById("custName").value.trim(), phone:document.getElementById("custPhone").value.trim(), pickup:document.getElementById("pickup").value.trim(), dropoff:document.getElementById("dropoff").value.trim(), pickupCoords:pinCoords.pickup||"", dropoffCoords:pinCoords.dropoff||"", item:item, estimate:(fareState.label||"To be confirmed")+(fareState.km!=null?" (~"+fareState.km.toFixed(1)+" km)":""), at:new Date().toISOString(), source:"website" };
 }
 function bookingMessage(p){
   const pin = c => c ? "\nmaps.google.com/?q=" + c : "";
