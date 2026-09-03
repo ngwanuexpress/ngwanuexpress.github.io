@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ride with NGWANU EXPRESS — Earn every week in Lagos</title>
+<meta name="description" content="Become a NGWANU EXPRESS rider. Steady dispatch across Lagos, weekly payouts, and Pay As You Ride — own your bike with easy weekly payments. Apply online in minutes." />
+<meta name="theme-color" content="#01442E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --green:#01442E; --green-deep:#0C3325; --green-hover:#0A5A3C;
+  --orange:#E08020; --orange-hover:#C56E17; --gold:#C89028;
+  --ink:#181818; --muted:#5c5c5c; --line:rgba(0,0,0,.14);
+  --paper:#faf8f3; --radius:16px; --maxw:1140px;
+  --shadow:0 20px 50px -24px rgba(12,51,37,.34);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--paper);line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:Fraunces,Georgia,"Times New Roman",serif;font-weight:600;line-height:1.07;margin:0;letter-spacing:-.01em}
+p{margin:0 0 1rem}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.eyebrow{font-size:.76rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:12px;margin:0 0 20px}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--gold);flex:none}
+.btn{--bg:var(--green);--fg:#fff;--bd:var(--green);display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--bg);color:var(--fg);border:2px solid var(--bd);font-family:inherit;font-weight:600;font-size:1rem;padding:15px 28px;border-radius:999px;text-decoration:none;cursor:pointer;transition:transform .12s ease,background .16s ease,border-color .16s ease,color .16s ease}
+.btn:hover{background:var(--green-hover);border-color:var(--green-hover);transform:translateY(-2px)}
+.btn--accent{--bg:var(--orange);--fg:#fff;--bd:var(--orange)}
+.btn--accent:hover{background:var(--orange-hover);border-color:var(--orange-hover)}
+.btn--ghost{--bg:transparent;--fg:var(--green);--bd:var(--green)}
+.btn--ghost:hover{--bg:var(--green);--fg:#fff;--bd:var(--green)}
+.btn--block{width:100%}
+.btn svg{width:19px;height:19px;flex:none}
+section{padding:92px 0;border-top:1px solid var(--line)}
+.section-head{max-width:640px;margin-bottom:52px}
+.section-head h2{font-size:clamp(2rem,4.6vw,3rem)}
+.section-head p{margin-top:16px;color:var(--muted);font-size:1.08rem}
+.logo{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-family:Fraunces,serif;font-weight:700;font-size:1.28rem;letter-spacing:-.02em;white-space:nowrap}
+.logo-mark{width:25px;height:25px;color:var(--green);flex:none}
+.logo .g{color:var(--green)}
+.logo .o{color:var(--orange)}
+.logo small{display:block;font-family:Inter,sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.22em;color:var(--orange);margin-top:-2px}
+.strip{background:var(--green-deep);color:#fff;font-size:.82rem;font-weight:500;letter-spacing:.02em;text-align:center;padding:9px 16px}
+.strip b{color:var(--orange);font-weight:700}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(250,248,243,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
+.nav{display:flex;align-items:center;gap:30px}
+.nav a{text-decoration:none;font-weight:500;font-size:.95rem;color:#232323;position:relative}
+.nav a:hover{color:var(--orange)}
+.nav a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--orange);transition:width .2s ease}
+.nav a:hover::after{width:100%}
+.nav .btn{padding:11px 20px;font-size:.92rem}
+.nav-toggle{display:none;background:none;border:0;cursor:pointer;padding:8px}
+.nav-toggle span{display:block;width:24px;height:2px;background:var(--ink);margin:5px 0;transition:.2s}
+.hero{padding:78px 0 96px;border-top:0}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(2.6rem,6.2vw,4.3rem)}
+.hero h1 .accent{color:var(--orange);font-style:italic}
+.hero .lead{font-size:1.2rem;color:#2b2b2b;margin:22px 0 32px;max-width:38ch}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px}
+.hero-meta{display:flex;gap:26px;margin-top:34px;flex-wrap:wrap}
+.hero-meta div{font-size:.9rem;color:var(--muted)}
+.hero-meta b{display:block;font-family:Fraunces,serif;font-size:1.5rem;color:var(--ink);line-height:1}
+.pay-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
+.pay-card .pill{background:rgba(1,68,46,.1);color:var(--green);font-weight:700;font-size:.78rem;padding:6px 12px;border-radius:999px;letter-spacing:.04em}
+.pay-card .amount{font-family:Fraunces,serif;font-size:2.6rem;font-weight:700;margin:16px 0 2px}
+.pay-card .amount span{font-size:1rem;color:var(--muted);font-family:Inter,sans-serif;font-weight:500}
+.pay-card .bars{display:flex;align-items:flex-end;gap:8px;height:96px;margin:20px 0 6px}
+.pay-card .bars i{flex:1;background:var(--green);border-radius:6px 6px 0 0;opacity:.35;height:40%}
+.pay-card .bars i:nth-child(2){opacity:.5;height:58%}
+.pay-card .bars i:nth-child(3){opacity:.7;height:74%}
+.pay-card .bars i:nth-child(4){opacity:.85;height:62%}
+.pay-card .bars i:nth-child(5){opacity:1;height:92%}
+.pay-card .foot{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:30px;background:#fff;transition:transform .16s ease,box-shadow .16s ease}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card.featured{border-color:var(--orange);background:rgba(224,128,32,.05)}
+.card .ico{width:46px;height:46px;border-radius:12px;background:var(--green);display:grid;place-items:center;margin-bottom:18px}
+.card.featured .ico{background:var(--orange)}
+.card .ico svg{width:23px;height:23px;color:#fff}
+.card h3{font-size:1.25rem;margin-bottom:10px}
+.card p{color:var(--muted);margin:0;font-size:.98rem}
+.card .tag{display:inline-block;margin-top:14px;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+#requirements{background:#fff}
+.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+.checklist{list-style:none;padding:0;margin:0}
+.checklist li{display:flex;gap:14px;padding:16px 0;border-bottom:1px dashed var(--line)}
+.checklist li:last-child{border-bottom:0}
+.checklist li svg{width:22px;height:22px;color:var(--green);flex:none;margin-top:2px}
+.checklist li b{display:block}
+.checklist li span{color:var(--muted);font-size:.94rem}
+.note-box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+.note-box + .note-box{margin-top:18px}
+.note-box h3{font-size:1.1rem;margin-bottom:10px}
+.note-box h3 .b{color:var(--orange)}
+.note-box p{color:var(--muted);font-size:.95rem;margin:0}
+.steps{counter-reset:step;margin:0;padding:0;list-style:none;max-width:720px}
+.steps li{position:relative;padding:0 0 26px 56px;counter-increment:step}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;font-family:Fraunces,serif;font-weight:700;display:grid;place-items:center}
+.steps li:not(:last-child)::after{content:"";position:absolute;left:17px;top:40px;bottom:4px;width:2px;background:var(--line)}
+.steps li b{display:block;font-size:1.05rem}
+.steps li span{color:var(--muted);font-size:.96rem}
+#apply{background:#fff}
+.apply-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:48px;align-items:start}
+.form-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:600;font-size:.88rem;margin-bottom:7px}
+.field input,.field select{width:100%;font-family:inherit;font-size:1rem;color:var(--ink);padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s ease,box-shadow .15s ease}
+.field input:focus,.field select:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 4px rgba(1,68,46,.14)}
+.subhead{font-family:Fraunces,serif;font-size:1.05rem;font-weight:600;margin:24px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+.subhead:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.check-field{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:14px;margin:6px 0 18px;font-size:.92rem}
+.check-field input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--green)}
+.error-text{color:#b00020;font-size:.85rem;margin:6px 0 0;display:none}
+.form-success{display:none;background:rgba(1,68,46,.09);border:1.5px solid var(--green);color:var(--green);border-radius:12px;padding:18px;font-weight:500;margin-bottom:16px}
+.form-success.show{display:block}
+.mini{font-size:.8rem;color:var(--muted);margin-top:12px}
+.site-footer{background:var(--green-deep);color:#d6ded9;border-top:0;padding:72px 0 34px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1.1fr;gap:40px}
+.site-footer .logo{color:#fff}
+.site-footer .logo-mark{color:#fff}
+.site-footer .logo .g{color:#fff}
+.site-footer .logo .o{color:var(--orange)}
+.site-footer p{color:#a9b8b1;font-size:.95rem;max-width:34ch}
+.site-footer h4{font-family:Inter,sans-serif;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:#8aa398;margin:0 0 14px}
+.site-footer a{display:block;text-decoration:none;color:#d6ded9;padding:6px 0;font-size:.96rem}
+.site-footer a:hover{color:var(--orange)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.14);margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.85rem;color:#8aa398}
+@media (max-width:960px){
+  .hero-grid,.req-grid,.apply-grid{grid-template-columns:1fr;gap:40px}
+  .cards{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:720px){
+  section{padding:66px 0}
+  .grid-2{grid-template-columns:1fr}
+  .nav{position:absolute;top:74px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 22px 20px;display:none}
+  .nav.open{display:flex}
+  .nav a{padding:14px 0;border-bottom:1px solid var(--line)}
+  .nav a::after{display:none}
+  .nav .btn{margin-top:14px;text-align:center}
+  .nav-toggle{display:block}
+  .header-inner{position:relative}
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body id="top">
+<div class="strip">Recruiting riders across <b>Lagos</b> &nbsp;•&nbsp; Weekly payouts &nbsp;•&nbsp; Pay As You Ride — own your bike &nbsp;•&nbsp; 🇳🇬</div>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#top" class="logo">
+      <svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h7l9 9-9 9H4l9-9z" fill="currentColor"/></svg>
+      <span><span class="g">NGWANU</span> <span class="o">EXPRESS</span><small>RIDER SIGN-UP</small></span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#top">Home</a>
+      <a href="#why">Why Ngwanu</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#apply">Apply</a>
+      <a id="navCustomer" href="../">Book a Delivery</a>
+      <a href="#apply" class="btn">Apply to Ride</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<section class="hero container">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">For Riders • Lagos</p>
+      <h1>Ride with Ngwanu. <span class="accent">Earn every week.</span></h1>
+      <p class="lead">Put your bike to work with steady dispatch and transparent pay. No bike yet? Ask about <strong>Pay As You Ride</strong> — own one with easy weekly payments.</p>
+      <div class="hero-cta">
+        <a href="#apply" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Apply to Ride</a>
+        <a href="#requirements" class="btn btn--ghost">See requirements</a>
+      </div>
+      <div class="hero-meta">
+        <div><b>Weekly</b> payouts</div>
+        <div><b>Own</b> your bike</div>
+        <div><b>&lt;3 days</b> to get verified</div>
+      </div>
+    </div>
+    <div class="pay-card" aria-hidden="true">
+      <span class="pill">SAMPLE WEEK</span>
+      <div class="amount">₦48,500 <span>/ paid Monday</span></div>
+      <div class="bars"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="foot"><span>Mon</span><span>Wed</span><span>Fri</span><span>Sun</span></div>
+    </div>
+  </div>
+</section>
+<section id="why">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">01 — Why ride with us</p>
+      <h2>Fair pay, steady trips, a path to owning your bike.</h2>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><h3>Weekly payouts</h3><p>Your earnings are settled every week, straight to your bank or wallet. Clear breakdown per trip — no guesswork.</p></div>
+      <div class="card featured"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2.5 0 012.5-2h.5a2 2 0 010 4h-1a2 2 0 000 4h.5a2.5 2.5 0 002.5-2"/></svg></div><h3>Pay As You Ride</h3><p>Don't own a bike yet? Ride one of ours and pay it off in easy weekly instalments — until the bike is fully yours.</p><span class="tag">Own your bike</span></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>We've got your back</h3><p>A dispatcher you can reach, dispute support when a customer is wrong, and a verified-rider badge that builds trust for you.</p></div>
+    </div>
+  </div>
+</section>
+<section id="requirements">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">02 — Requirements</p>
+      <h2>What you need to ride.</h2>
+      <p>We verify every rider properly — it protects customers and it protects you. Have these ready before you apply.</p>
+    </div>
+    <div class="req-grid">
+      <ul class="checklist">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>A bike — yours or on Pay As You Ride</b><span>Own a bike with valid papers, or apply for one of ours on weekly instalments.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Valid NIN and Driver's License</b><span>Original documents — we confirm the details and match them to your selfie.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Smartphone with WhatsApp</b><span>You'll receive dispatches and share your live location from it.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>2 guarantors with ID</b><span>Each provides their own valid ID and agrees to a short verification call.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>18 years or older</b><span>And familiar with the roads across your delivery zone.</span></div></li>
+      </ul>
+      <div>
+        <div class="note-box"><h3>How you'll submit documents</h3><p>Fill the short form on this page first. Right after you submit, we open a WhatsApp chat with our onboarding team where you upload clear photos of your NIN/ID, a selfie, your bike papers, and your two guarantors' IDs. Verification usually takes under 3 days.</p></div>
+        <div class="note-box"><h3><span class="b">Pay As You Ride</span> — no bike? No problem.</h3><p>Select "I need a bike (Pay As You Ride)" on the form. We'll assign you a bike and set up easy weekly payments deducted from your earnings until it's fully yours. Guarantor checks still apply.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="how">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">03 — Onboarding</p>
+      <h2>From application to first trip.</h2>
+    </div>
+    <ol class="steps">
+      <li><b>Submit this application</b><span>Name, phone, bike details and your two guarantors — about 2 minutes.</span></li>
+      <li><b>Upload documents on WhatsApp</b><span>NIN/ID, selfie, bike papers, and both guarantor IDs.</span></li>
+      <li><b>Verification &amp; guarantor calls</b><span>We confirm your ID, check records, and speak to both guarantors.</span></li>
+      <li><b>Onboarding &amp; first dispatch</b><span>Collect your Ngwanu kit (and your bike, if on Pay As You Ride), get a short briefing, and start earning.</span></li>
+    </ol>
+  </div>
+</section>
+<section id="apply">
+  <div class="container apply-grid">
+    <div>
+      <p class="eyebrow">04 — Apply</p>
+      <h2 style="font-size:clamp(1.9rem,4.4vw,2.7rem)">Send your application.</h2>
+      <p style="color:var(--muted);margin-top:14px">Takes about 2 minutes. After you submit, we'll continue on WhatsApp to collect your documents and book your verification.</p>
+    </div>
+    <form class="form-card" id="riderForm" novalidate>
+      <div class="form-success" id="riderSuccess">✅ Application received. We're opening WhatsApp so you can send your documents. If it didn't open, tap the button again.</div>
+      <div class="subhead">Your details</div>
+      <div class="grid-2">
+        <div class="field"><label for="fullName">Full name</label><input type="text" id="fullName" name="fullName" autocomplete="name" /></div>
+        <div class="field"><label for="phone">Phone / WhatsApp</label><input type="tel" id="phone" name="phone" placeholder="080..." autocomplete="tel" /></div>
+      </div>
+      <div class="field"><label for="area">Area you cover</label>
+        <select id="area" name="area"><option value="Lagos Mainland">Lagos Mainland</option><option value="Lagos Island">Lagos Island</option><option value="Ikeja">Ikeja</option><option value="Surulere">Surulere</option><option value="Lekki / Ajah">Lekki / Ajah</option><option value="Other">Other</option></select>
+      </div>
+      <div class="subhead">Your bike</div>
+      <div class="field"><label for="bikeStatus">Bike situation</label>
+        <select id="bikeStatus" name="bikeStatus"><option value="I own my bike">I own my bike</option><option value="I need a bike (Pay As You Ride)">I need a bike (Pay As You Ride)</option></select>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label for="bikeModel">Make &amp; model <span style="color:var(--muted);font-weight:400">(if you own one)</span></label><input type="text" id="bikeModel" name="bikeModel" placeholder="e.g. Bajaj Boxer" /></div>
+        <div class="field"><label for="plate">Plate number <span style="color:var(--muted);font-weight:400">(if you own one)</span></label><input type="text" id="plate" name="plate" placeholder="e.g. LAG-123-XYZ" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label for="hasNin">Have a valid NIN?</label><select id="hasNin" name="hasNin"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+        <div class="field"><label for="hasLicense">Have a Driver's License?</label><select id="hasLicense" name="hasLicense"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+      </div>
+      <div class="subhead">Your guarantors</div>
+      <div class="grid-2">
+        <div class="field"><label for="g1name">Guarantor 1 — name</label><input type="text" id="g1name" name="g1name" /></div>
+        <div class="field"><label for="g1phone">Guarantor 1 — phone</label><input type="tel" id="g1phone" name="g1phone" placeholder="080..." /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label for="g2name">Guarantor 2 — name</label><input type="text" id="g2name" name="g2name" /></div>
+        <div class="field"><label for="g2phone">Guarantor 2 — phone</label><input type="tel" id="g2phone" name="g2phone" placeholder="080..." /></div>
+      </div>
+      <label class="check-field"><input type="checkbox" id="confirm" /><span>I confirm I can provide my NIN/ID, a selfie, valid ID for both guarantors (and bike papers if I own a bike), and that the details above are true.</span></label>
+      <p class="error-text" id="riderError">Please fill your name, phone, both guarantors, and tick the confirmation box.</p>
+      <button type="submit" class="btn btn--block"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.7 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm0 18a8 8 0 01-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1112 20zm4.4-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.5 6.5 0 01-1.9-1.2 7.3 7.3 0 01-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.5.3-.5c0-.1 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4H6c-.2 0-.4.1-.6.3a3 3 0 00-1 2.3 5.3 5.3 0 001.1 2.8 12 12 0 004.6 4c.6.3 1.1.4 1.5.5a3.6 3.6 0 001.6.1c.5-.1 1.4-.6 1.6-1.1s.2-1 .1-1.1-.2-.2-.5-.3z"/></svg> Submit &amp; continue on WhatsApp</button>
+      <p class="mini">By submitting you agree to a background and guarantor check. We never share your documents outside verification.</p>
+    </form>
+  </div>
+</section>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#top" class="logo">
+          <svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h7l9 9-9 9H4l9-9z" fill="currentColor"/></svg>
+          <span><span class="g">NGWANU</span> <span class="o">EXPRESS</span></span>
+        </a>
+        <p style="margin-top:14px">Ngwanu… we move it! Recruiting verified riders across Lagos.</p>
+      </div>
+      <div>
+        <h4>Riders</h4>
+        <a href="#why">Why Ngwanu</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#apply">Apply to ride</a>
+        <a id="footCustomer" href="../">Book a delivery</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="#" id="footerWhatsApp" target="_blank" rel="noopener">Chat on WhatsApp</a>
+        <a id="footerPhone" href="tel:+2348118494314">+234 811 849 4314</a>
+        <a id="footerEmail" href="mailto:ngwanuexpress@gmail.com">ngwanuexpress@gmail.com</a>
+        <a href="#top">📍 Lagos, Nigeria</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Ngwanu Express. All rights reserved.</span><span>Lagos • Nigeria 🇳🇬</span></div>
+  </div>
+</footer>
+<script>
+const WHATSAPP_NUMBER = "2348118494314";
+const CONTACT_PHONE = "+234 811 849 4314";
+const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
+const CUSTOMER_SITE_URL = "../";
+const FORM_ENDPOINT = "";
+function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
+["navCustomer","footCustomer"].forEach(function(id){ var el = document.getElementById(id); if(el) el.setAttribute("href", CUSTOMER_SITE_URL); });
+document.getElementById("footerPhone").textContent = CONTACT_PHONE;
+document.getElementById("footerPhone").setAttribute("href", "tel:" + CONTACT_PHONE.replace(/\s/g,""));
+document.getElementById("footerEmail").textContent = CONTACT_EMAIL;
+document.getElementById("footerEmail").setAttribute("href", "mailto:" + CONTACT_EMAIL);
+const form = document.getElementById("riderForm");
+const err = document.getElementById("riderError");
+const ok = document.getElementById("riderSuccess");
+const val = id => document.getElementById(id).value.trim();
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+  const required = ["fullName","phone","g1name","g1phone","g2name","g2phone"];
+  const missing = required.some(id => !val(id)) || !document.getElementById("confirm").checked;
+  if(missing){ err.style.display = "block"; const firstEmpty = required.find(id => !val(id)); if(firstEmpty) document.getElementById(firstEmpty).focus(); return; }
+  err.style.display = "none";
+  const bikeLine = val("bikeStatus") === "I own my bike" ? "Bike: " + (val("bikeModel") || "(model not given)") + " — " + (val("plate") || "(plate not given)") : "Bike: NEEDS A BIKE — Pay As You Ride";
+  const data = { type:"rider_application", fullName: val("fullName"), phone: val("phone"), area: val("area"), bikeStatus: val("bikeStatus"), bikeModel: val("bikeModel"), plate: val("plate"), hasNin: val("hasNin"), hasLicense: val("hasLicense"), guarantor1: val("g1name")+" ("+val("g1phone")+")", guarantor2: val("g2name")+" ("+val("g2phone")+")", at: new Date().toISOString() };
+  if(FORM_ENDPOINT){ fetch(FORM_ENDPOINT, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(data) }).catch(function(){}); }
+  const message = "Hello NGWANU EXPRESS 🏍️  — Rider application\n\nName: " + data.fullName + "\nPhone: " + data.phone + "\nArea: " + data.area + "\n\n" + bikeLine + "\nHas NIN: " + data.hasNin + "  |  Has License: " + data.hasLicense + "\n\nGuarantor 1: " + data.guarantor1 + "\nGuarantor 2: " + data.guarantor2 + "\n\nI'm ready to send my NIN/ID, selfie, bike papers (if I own one) and guarantor IDs.";
+  ok.classList.add("show");
+  ok.scrollIntoView({behavior:"smooth", block:"center"});
+  window.open(waLink(message), "_blank");
+});
+document.getElementById("footerWhatsApp").setAttribute("href", waLink("Hello NGWANU EXPRESS 🏍️ I have a question about riding with you."));
+const navToggle = document.getElementById("navToggle");
+const nav = document.getElementById("nav");
+navToggle.addEventListener("click", function(){ const open = nav.classList.toggle("open"); navToggle.setAttribute("aria-expanded", open ? "true" : "false"); });
+nav.addEventListener("click", function(e){ if(e.target.tagName === "A"){ nav.classList.remove("open"); navToggle.setAttribute("aria-expanded","false"); } });
+</script>
+</body>
+</html>
