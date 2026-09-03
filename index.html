@@ -94,6 +94,12 @@ section{padding:92px 0;border-top:1px solid var(--line)}
 .field input,.field select{width:100%;font-family:inherit;font-size:1rem;color:var(--ink);padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s ease,box-shadow .15s ease}
 .field input:focus,.field select:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 4px rgba(1,68,46,.14)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ac-wrap{position:relative}
+.ac-list{position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:40;list-style:none;margin:0;padding:5px;background:#fff;border:1.5px solid var(--line);border-radius:12px;box-shadow:0 16px 40px -14px rgba(12,51,37,.3);max-height:242px;overflow-y:auto}
+.ac-list li{display:flex;gap:9px;align-items:flex-start;padding:10px 11px;border-radius:8px;font-size:.92rem;line-height:1.4;cursor:pointer}
+.ac-list li svg{width:15px;height:15px;color:var(--green);flex:none;margin-top:3px}
+.ac-list li[role=option]:hover,.ac-list li[aria-selected="true"]{background:rgba(1,68,46,.09)}
+.ac-list .ac-note{color:var(--muted);cursor:default}
 .loc-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:none;border:0;padding:4px 0;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--green);cursor:pointer}
 .loc-btn:hover{text-decoration:underline;color:var(--orange)}
 .loc-btn svg{width:15px;height:15px}
@@ -220,25 +226,38 @@ section{padding:92px 0;border-top:1px solid var(--line)}
       <h2 style="font-size:clamp(1.9rem,4.4vw,2.7rem)">Tell us where. We send a rider.</h2>
       <p style="color:var(--muted);margin-top:14px">Book right here. We confirm your rider and price by phone within minutes — no app, no queue.</p>
       <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Book on the site — a dispatcher calls you back</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Start typing an address — pick a suggestion</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Cash, transfer or POS on delivery</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Live tracking link sent to your phone</li>
       </ul>
     </div>
+
     <form class="form-card" id="bookForm" novalidate>
       <div class="grid-2">
-        <div class="field"><label for="custName">Your name</label><input type="text" id="custName" name="custName" placeholder="e.g. Ada Obi" autocomplete="name" /></div>
-        <div class="field"><label for="custPhone">Phone (WhatsApp)</label><input type="tel" id="custPhone" name="custPhone" placeholder="080..." autocomplete="tel" /></div>
+        <div class="field">
+          <label for="custName">Your name</label>
+          <input type="text" id="custName" name="custName" placeholder="e.g. Ada Obi" autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="custPhone">Phone (WhatsApp)</label>
+          <input type="tel" id="custPhone" name="custPhone" placeholder="080..." autocomplete="tel" inputmode="tel" />
+        </div>
       </div>
-      <div class="field">
+      <div class="field field--addr">
         <label for="pickup">Pickup address</label>
-        <input type="text" id="pickup" name="pickup" placeholder="e.g. 12 Awolowo Road, Ikoyi" autocomplete="off" />
+        <div class="ac-wrap">
+          <input type="text" id="pickup" name="pickup" placeholder="Start typing, e.g. Awolowo Road…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pickupAC" />
+          <ul class="ac-list" id="pickupAC" role="listbox" hidden></ul>
+        </div>
         <button type="button" class="loc-btn" data-target="pickup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Use my current location</button>
         <span class="loc-status" id="pickupStatus"></span>
       </div>
-      <div class="field">
+      <div class="field field--addr">
         <label for="dropoff">Drop-off address</label>
-        <input type="text" id="dropoff" name="dropoff" placeholder="e.g. Adeola Odeku St, Victoria Island" autocomplete="off" />
+        <div class="ac-wrap">
+          <input type="text" id="dropoff" name="dropoff" placeholder="Start typing, e.g. Adeola Odeku…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="dropoffAC" />
+          <ul class="ac-list" id="dropoffAC" role="listbox" hidden></ul>
+        </div>
         <button type="button" class="loc-btn" data-target="dropoff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Use my current location</button>
         <span class="loc-status" id="dropoffStatus"></span>
       </div>
@@ -252,6 +271,7 @@ section{padding:92px 0;border-top:1px solid var(--line)}
       <p class="error-text" id="formError">Please fill your name, phone, and both addresses.</p>
       <p class="alt-line">Prefer WhatsApp? <a id="bookWhatsAppLink">Send this booking on WhatsApp instead</a></p>
     </form>
+
     <div class="booking-done" id="bookingDone" hidden>
       <div class="done-check">✓</div>
       <h3>Booking received</h3>
@@ -332,12 +352,20 @@ const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const RIDER_SITE_URL = "ride/";
 const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
 const PRICING = { base: 800, spread: 700, Food: 0, Parcel: 300, Document: 0, Grocery: 600 };
+const LAGOS_BBOX = "2.70,6.35,4.35,6.78";
+const LAGOS_CENTRE = { lat: 6.5244, lon: 3.3792 };
+const GEO = {
+  search: function(q){ return "https://photon.komoot.io/api/?q=" + encodeURIComponent(q) + "&lang=en&limit=6&lat=" + LAGOS_CENTRE.lat + "&lon=" + LAGOS_CENTRE.lon + "&bbox=" + LAGOS_BBOX; },
+  reverse: function(lat, lon){ return "https://photon.komoot.io/reverse/?lat=" + lat + "&lon=" + lon + "&lang=en"; }
+};
 const naira = n => "₦" + n.toLocaleString("en-NG");
 function computeEstimate(t){ const e = PRICING[t]||0, low = PRICING.base+e, high = low+PRICING.spread; return { low, high, label: naira(low)+" – "+naira(high) }; }
 function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
 function openWhatsApp(url){ var win = window.open(url, "_blank"); if(!win || win.closed || typeof win.closed === "undefined"){ window.location.href = url; } }
 function makeRef(prefix){ return prefix + "-" + Date.now().toString().slice(-6); }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function digitCount(s){ return (String(s).match(/\d/g) || []).length; }
+function debounce(fn, ms){ var t; return function(){ var a = arguments, c = this; clearTimeout(t); t = setTimeout(function(){ fn.apply(c, a); }, ms); }; }
 ["navRider","heroRider","bandRider","footRider"].forEach(function(id){ var el = document.getElementById(id); if(el) el.setAttribute("href", RIDER_SITE_URL); });
 document.getElementById("footerPhone").textContent = CONTACT_PHONE;
 document.getElementById("footerPhone").setAttribute("href", "tel:" + CONTACT_PHONE.replace(/\s/g,""));
@@ -348,10 +376,67 @@ const priceValueEl = document.getElementById("priceValue");
 function refreshPrice(){ priceValueEl.textContent = computeEstimate(itemTypeEl.value).label; }
 itemTypeEl.addEventListener("change", refreshPrice); refreshPrice();
 const pinCoords = { pickup: null, dropoff: null };
+function formatAddr(pr){
+  if(!pr) return "Selected location";
+  var first = [];
+  if(pr.name){ first.push(pr.name); } else { if(pr.housenumber) first.push(pr.housenumber); if(pr.street) first.push(pr.street); }
+  var rest = [];
+  [pr.district, pr.city, pr.county, pr.state].forEach(function(v){ if(v && first.indexOf(v) === -1 && rest.indexOf(v) === -1) rest.push(v); });
+  var line = first.join(" ");
+  if(rest.length) line += (line ? ", " : "") + rest.slice(0, 3).join(", ");
+  return line || pr.name || "Selected location";
+}
+function geoSearch(q){ return fetch(GEO.search(q)).then(function(r){ return r.json(); }).then(function(d){ return (d.features || []).slice(0, 6); }); }
+function geoReverse(lat, lon){ return fetch(GEO.reverse(lat, lon)).then(function(r){ return r.json(); }).then(function(d){ var f = (d.features || [])[0]; return f ? formatAddr(f.properties) : null; }); }
+function attachAutocomplete(target){
+  const input = document.getElementById(target);
+  const list = document.getElementById(target + "AC");
+  const status = document.getElementById(target + "Status");
+  let feats = []; let active = -1;
+  function close(){ list.hidden = true; list.innerHTML = ""; feats = []; active = -1; input.setAttribute("aria-expanded","false"); }
+  function paint(){
+    if(!feats.length){ list.innerHTML = '<li class="ac-note">No matches yet — keep typing, or use “Use my current location”.</li>'; }
+    else { list.innerHTML = feats.map(function(f, i){ return '<li role="option" data-i="' + i + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>' + esc(formatAddr(f.properties)) + '</span></li>'; }).join(""); }
+    list.hidden = false; input.setAttribute("aria-expanded","true");
+  }
+  function choose(i){
+    const f = feats[i]; if(!f) return;
+    input.value = formatAddr(f.properties);
+    const c = f.geometry && f.geometry.coordinates;
+    if(c){ pinCoords[target] = (+c[1]).toFixed(6) + "," + (+c[0]).toFixed(6);
+      const link = "https://maps.google.com/?q=" + pinCoords[target];
+      status.innerHTML = '📍 Address pinned — <a href="' + link + '" target="_blank" rel="noopener">view on map</a>'; }
+    close();
+  }
+  const run = debounce(function(){
+    const q = input.value.trim();
+    if(q.length < 3){ close(); return; }
+    pinCoords[target] = null; status.textContent = "";
+    geoSearch(q).then(function(r){ feats = r; active = -1; paint(); }).catch(function(){ close(); });
+  }, 320);
+  input.addEventListener("input", run);
+  input.addEventListener("keydown", function(e){
+    if(list.hidden) return;
+    const lis = list.querySelectorAll("li[role=option]");
+    if(!lis.length){ if(e.key === "Escape") close(); return; }
+    if(e.key === "ArrowDown"){ e.preventDefault(); active = (active + 1) % lis.length; }
+    else if(e.key === "ArrowUp"){ e.preventDefault(); active = (active - 1 + lis.length) % lis.length; }
+    else if(e.key === "Enter"){ if(active > -1){ e.preventDefault(); choose(active); } return; }
+    else if(e.key === "Escape"){ close(); return; }
+    else return;
+    lis.forEach(function(li, i){ li.setAttribute("aria-selected", i === active ? "true" : "false"); });
+    if(lis[active]) lis[active].scrollIntoView({ block: "nearest" });
+  });
+  list.addEventListener("pointerdown", function(e){ const li = e.target.closest("li[role=option]"); if(li){ e.preventDefault(); choose(+li.dataset.i); } });
+  input.addEventListener("blur", function(){ setTimeout(close, 160); });
+}
+attachAutocomplete("pickup");
+attachAutocomplete("dropoff");
 document.querySelectorAll(".loc-btn").forEach(function(btn){
   btn.addEventListener("click", function(){
     const target = btn.dataset.target;
     const statusEl = document.getElementById(target + "Status");
+    const input = document.getElementById(target);
     if(!navigator.geolocation){ statusEl.textContent = "Location isn't supported here — please type the address."; return; }
     statusEl.textContent = "Getting your location…";
     navigator.geolocation.getCurrentPosition(function(pos){
@@ -359,9 +444,14 @@ document.querySelectorAll(".loc-btn").forEach(function(btn){
       const lng = pos.coords.longitude.toFixed(6);
       pinCoords[target] = lat + "," + lng;
       const link = "https://maps.google.com/?q=" + pinCoords[target];
-      const input = document.getElementById(target);
-      if(!input.value.trim()) input.value = "My current location (GPS pin sent)";
-      statusEl.innerHTML = '📍 Location captured — <a href="' + link + '" target="_blank" rel="noopener">view pin</a>';
+      statusEl.innerHTML = '📍 Location captured — <a href="' + link + '" target="_blank" rel="noopener">view on map</a>. Finding address…';
+      geoReverse(lat, lng).then(function(addr){
+        input.value = addr || ("Location: " + lat + ", " + lng);
+        statusEl.innerHTML = '📍 Address filled from your location — <a href="' + link + '" target="_blank" rel="noopener">view on map</a>';
+      }).catch(function(){
+        input.value = "Location: " + lat + ", " + lng;
+        statusEl.innerHTML = '📍 Location captured — <a href="' + link + '" target="_blank" rel="noopener">view on map</a>';
+      });
     }, function(){ statusEl.textContent = "Couldn't get location — please type the address instead."; }, { enableHighAccuracy: true, timeout: 10000 });
   });
 });
@@ -377,7 +467,13 @@ function bookingMessage(p){
   const pin = c => c ? "\nmaps.google.com/?q=" + c : "";
   return "Hello NGWANU EXPRESS 👋\n\nNew booking — " + p.ref + "\n\nName: " + p.name + "\nPhone: " + p.phone + "\n\n📍 Pickup: " + p.pickup + pin(p.pickupCoords) + "\n🎯 Drop-off: " + p.dropoff + pin(p.dropoffCoords) + "\n📦 Item type: " + p.item + "\n💰 Estimated fare: " + p.estimate + "\n\nPlease send a rider.";
 }
-function firstMissing(p){ if(!p.name) return "custName"; if(!p.phone) return "custPhone"; if(!p.pickup) return "pickup"; if(!p.dropoff) return "dropoff"; return null; }
+function validate(p){
+  if(!p.name) return { field:"custName", msg:"Please enter your name." };
+  if(!p.phone || digitCount(p.phone) < 7) return { field:"custPhone", msg:"Please enter a valid phone number so we can call you back." };
+  if(!p.pickup) return { field:"pickup", msg:"Please enter a pickup address." };
+  if(!p.dropoff) return { field:"dropoff", msg:"Please enter a drop-off address." };
+  return null;
+}
 function showBookingDone(p){
   document.getElementById("bookRef").textContent = p.ref;
   document.getElementById("bookPhoneEcho").textContent = p.phone;
@@ -388,8 +484,8 @@ function showBookingDone(p){
 bookForm.addEventListener("submit", function(e){
   e.preventDefault();
   const p = buildPayload();
-  const miss = firstMissing(p);
-  if(miss){ formError.textContent = "Please fill your name, phone, and both addresses."; formError.style.display = "block"; document.getElementById(miss).focus(); return; }
+  const bad = validate(p);
+  if(bad){ formError.textContent = bad.msg; formError.style.display = "block"; document.getElementById(bad.field).focus(); return; }
   formError.style.display = "none";
   if(!FORM_ENDPOINT){ openWhatsApp(waLink(bookingMessage(p))); return; }
   bookSubmitBtn.disabled = true;
@@ -403,8 +499,8 @@ bookForm.addEventListener("submit", function(e){
 document.getElementById("bookWhatsAppLink").addEventListener("click", function(e){
   e.preventDefault();
   const p = buildPayload();
-  const miss = firstMissing(p);
-  if(miss){ formError.style.display = "block"; document.getElementById(miss).focus(); return; }
+  const bad = validate(p);
+  if(bad){ formError.textContent = bad.msg; formError.style.display = "block"; document.getElementById(bad.field).focus(); return; }
   openWhatsApp(waLink(bookingMessage(p)));
 });
 document.getElementById("bookAnother").addEventListener("click", function(){
@@ -412,6 +508,8 @@ document.getElementById("bookAnother").addEventListener("click", function(){
   pinCoords.pickup = null; pinCoords.dropoff = null;
   document.getElementById("pickupStatus").textContent = "";
   document.getElementById("dropoffStatus").textContent = "";
+  document.getElementById("pickupAC").hidden = true;
+  document.getElementById("dropoffAC").hidden = true;
   refreshPrice();
   bookingDone.hidden = true; bookForm.hidden = false;
   bookForm.scrollIntoView({ behavior:"smooth", block:"center" });
