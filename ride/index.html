@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Ride with NGWANU EXPRESS — Earn every week in Lagos</title>
-<meta name="description" content="Become a NGWANU EXPRESS rider. Steady dispatch across Lagos, weekly payouts, and Pay As You Ride — own your bike with easy weekly payments. Apply online in minutes." />
+<meta name="description" content="Become a NGWANU EXPRESS rider. Steady dispatch across Lagos, weekly payouts, and Pay As You Ride — own your bike with easy weekly payments. Verified onboarding: upload your NIN, licence, selfie and guarantor IDs online." />
 <meta name="theme-color" content="#01442E" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -101,6 +101,9 @@ section{padding:92px 0;border-top:1px solid var(--line)}
 .note-box h3{font-size:1.1rem;margin-bottom:10px}
 .note-box h3 .b{color:var(--orange)}
 .note-box p{color:var(--muted);font-size:.95rem;margin:0}
+.note-box.secure{background:rgba(1,68,46,.04);border-color:rgba(1,68,46,.25)}
+.note-box.secure h3{color:var(--green);display:flex;align-items:center;gap:8px}
+.note-box.secure h3 svg{width:18px;height:18px;flex:none}
 .steps{counter-reset:step;margin:0;padding:0;list-style:none;max-width:720px}
 .steps li{position:relative;padding:0 0 26px 56px;counter-increment:step}
 .steps li::before{content:counter(step);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;font-family:Fraunces,serif;font-weight:700;display:grid;place-items:center}
@@ -113,16 +116,36 @@ section{padding:92px 0;border-top:1px solid var(--line)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .field{margin-bottom:16px}
 .field label{display:block;font-weight:600;font-size:.88rem;margin-bottom:7px}
-.field input,.field select{width:100%;font-family:inherit;font-size:1rem;color:var(--ink);padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s ease,box-shadow .15s ease}
-.field input:focus,.field select:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 4px rgba(1,68,46,.14)}
-.subhead{font-family:Fraunces,serif;font-size:1.05rem;font-weight:600;margin:24px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+.field .opt{color:var(--muted);font-weight:400}
+.field input,.field select,.field textarea{width:100%;font-family:inherit;font-size:1rem;color:var(--ink);padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s ease,box-shadow .15s ease}
+.field textarea{min-height:64px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 4px rgba(1,68,46,.14)}
+.hint{font-size:.78rem;color:var(--muted);margin-top:6px}
+.subhead{font-family:Fraunces,serif;font-size:1.05rem;font-weight:600;margin:26px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
 .subhead:first-of-type{border-top:0;padding-top:0;margin-top:0}
-.check-field{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:14px;margin:6px 0 18px;font-size:.92rem}
+.subhead .s{font-family:Inter,sans-serif;display:block;font-size:.8rem;font-weight:400;color:var(--muted);margin-top:3px}
+.file-field{margin-bottom:16px}
+.file-field > label{display:block;font-weight:600;font-size:.88rem;margin-bottom:7px}
+.file-drop{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--line);border-radius:10px;padding:12px 14px;background:#fff;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.file-drop:hover{border-color:var(--green);background:rgba(1,68,46,.03)}
+.file-drop svg{width:20px;height:20px;color:var(--green);flex:none}
+.file-drop span{font-size:.9rem;color:var(--muted)}
+.file-drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.file-status{font-size:.8rem;margin-top:6px;min-height:1.1em}
+.file-status.ok{color:var(--green);font-weight:600}
+.file-status.bad{color:#b00020;font-weight:600}
+.file-status.busy{color:var(--muted)}
+.consent-group{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:6px 14px;margin:10px 0 16px}
+.check-field{display:flex;gap:12px;align-items:flex-start;padding:12px 0;font-size:.9rem;border-bottom:1px solid var(--line)}
+.check-field:last-child{border-bottom:0}
 .check-field input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--green)}
 .error-text{color:#b00020;font-size:.85rem;margin:8px 0 0;display:none}
 .alt-line{font-size:.85rem;color:var(--muted);margin-top:14px;text-align:center}
 .alt-line a{color:var(--green);font-weight:600;cursor:pointer}
 .mini{font-size:.8rem;color:var(--muted);margin-top:12px}
+.mini svg{width:13px;height:13px;vertical-align:-2px;color:var(--green)}
+.upload-note{background:rgba(224,128,32,.08);border:1px solid rgba(224,128,32,.3);border-radius:10px;padding:12px 14px;font-size:.84rem;color:#7a4a12;margin:4px 0 18px;display:none}
+.upload-note.show{display:block}
 .booking-done{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:34px 30px;box-shadow:var(--shadow);text-align:center}
 .booking-done .done-check{width:56px;height:56px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:1.7rem;margin:0 auto 16px}
 .booking-done h3{font-size:1.5rem;margin-bottom:10px}
@@ -217,21 +240,25 @@ section{padding:92px 0;border-top:1px solid var(--line)}
 <section id="requirements">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">02 — Requirements</p>
+      <p class="eyebrow">02 — Requirements &amp; verification</p>
       <h2>What you need to ride.</h2>
-      <p>We verify every rider properly — it protects customers and it protects you. Have these ready before you apply.</p>
+      <p>We verify every rider properly — it protects customers, and it protects you. Have clear photos of these ready before you apply; you upload them straight into the form.</p>
     </div>
     <div class="req-grid">
       <ul class="checklist">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>A bike — yours or on Pay As You Ride</b><span>Own a bike with valid papers, or apply for one of ours on weekly instalments.</span></div></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Valid NIN and Driver's License</b><span>Original documents — we confirm the details and match them to your selfie.</span></div></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Smartphone with WhatsApp</b><span>You'll receive dispatches and share your live location from it.</span></div></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>2 guarantors with ID</b><span>Each provides their own valid ID and agrees to a short verification call.</span></div></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>18 years or older</b><span>And familiar with the roads across your delivery zone.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Your NIN slip or NIN card</b><span>11-digit number plus a photo of the document. We verify it against the national database.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Driver's licence or dispatch rider's card</b><span>Valid and unexpired. We match the name and photo to your NIN and selfie.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>A clear selfie</b><span>Taken now, good light, no cap or sunglasses — used for a face match against your ID.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>Bike papers</b><span>If you own your bike: proof of ownership / registration. On Pay As You Ride, we handle the papers.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>2 guarantors — with NIN and address</b><span>Each guarantor gives their full name, phone, home address, relationship to you, NIN number and a photo of their NIN. We call both.</span></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><div><b>18+ and a smartphone with WhatsApp</b><span>You'll receive dispatches and share your live location on every trip.</span></div></li>
       </ul>
       <div>
-        <div class="note-box"><h3>How verification works</h3><p>Fill the short form on this page. Our onboarding team then calls or WhatsApps you to collect clear photos of your NIN/ID, a selfie, your bike papers, and your two guarantors' IDs. Verification usually takes under 3 days.</p></div>
-        <div class="note-box"><h3><span class="b">Pay As You Ride</span> — no bike? No problem.</h3><p>Select "I need a bike (Pay As You Ride)" on the form. We'll assign you a bike and set up easy weekly payments deducted from your earnings until it's fully yours. Guarantor checks still apply.</p></div>
+        <div class="note-box secure">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> How we keep it serious</h3>
+          <p>Every document you upload goes to a private, access-controlled folder — only Ngwanu Express onboarding staff can open it. We confirm your NIN and licence against official records, run a face match against your selfie, call <em>both</em> guarantors, and check for any history of theft or fraud. Giving false information or a fake document ends the application and is reported to the authorities.</p>
+        </div>
+        <div class="note-box"><h3><span class="b">Pay As You Ride</span> — no bike? No problem.</h3><p>Select "I need a bike (Pay As You Ride)" on the form. We assign you a bike and set up easy weekly payments deducted from your earnings until it's fully yours. The same ID and guarantor checks apply.</p></div>
       </div>
     </div>
   </div>
@@ -243,9 +270,9 @@ section{padding:92px 0;border-top:1px solid var(--line)}
       <h2>From application to first trip.</h2>
     </div>
     <ol class="steps">
-      <li><b>Submit this application</b><span>Name, phone, bike details and your two guarantors — about 2 minutes.</span></li>
-      <li><b>Send your documents</b><span>We contact you to collect your NIN/ID, selfie, bike papers, and both guarantor IDs.</span></li>
-      <li><b>Verification &amp; guarantor calls</b><span>We confirm your ID, check records, and speak to both guarantors.</span></li>
+      <li><b>Complete this application &amp; upload your documents</b><span>Your details, NIN, licence, selfie, bike papers, and both guarantors with their NIN — about 5 minutes.</span></li>
+      <li><b>Identity &amp; document check</b><span>We verify your NIN and licence against records and run a face match against your selfie.</span></li>
+      <li><b>Guarantor calls &amp; background check</b><span>We speak to both guarantors and check for any theft or fraud history.</span></li>
       <li><b>Onboarding &amp; first dispatch</b><span>Collect your Ngwanu kit (and your bike, if on Pay As You Ride), get a short briefing, and start earning.</span></li>
     </ol>
   </div>
@@ -255,48 +282,110 @@ section{padding:92px 0;border-top:1px solid var(--line)}
     <div>
       <p class="eyebrow">04 — Apply</p>
       <h2 style="font-size:clamp(1.9rem,4.4vw,2.7rem)">Send your application.</h2>
-      <p style="color:var(--muted);margin-top:14px">Takes about 2 minutes. Our onboarding team will contact you to collect your documents and book your verification.</p>
+      <p style="color:var(--muted);margin-top:14px">Takes about 5 minutes. You'll upload your documents here — photos are compressed on your phone, so it works on normal mobile data. Everything is stored privately for verification only.</p>
     </div>
     <form class="form-card" id="riderForm" novalidate>
+
       <div class="subhead">Your details</div>
       <div class="grid-2">
-        <div class="field"><label for="fullName">Full name</label><input type="text" id="fullName" name="fullName" autocomplete="name" /></div>
-        <div class="field"><label for="phone">Phone / WhatsApp</label><input type="tel" id="phone" name="phone" placeholder="080..." autocomplete="tel" /></div>
+        <div class="field"><label for="fullName">Full name (as on your NIN)</label><input type="text" id="fullName" name="fullName" autocomplete="name" /></div>
+        <div class="field"><label for="phone">Phone / WhatsApp</label><input type="tel" id="phone" name="phone" placeholder="080..." autocomplete="tel" inputmode="tel" /></div>
       </div>
-      <div class="field"><label for="area">Area you cover</label>
-        <select id="area" name="area"><option value="Lagos Mainland">Lagos Mainland</option><option value="Lagos Island">Lagos Island</option><option value="Ikeja">Ikeja</option><option value="Surulere">Surulere</option><option value="Lekki / Ajah">Lekki / Ajah</option><option value="Other">Other</option></select>
+      <div class="grid-2">
+        <div class="field"><label for="dob">Date of birth</label><input type="date" id="dob" name="dob" /></div>
+        <div class="field"><label for="area">Area you cover</label>
+          <select id="area" name="area"><option value="Lagos Mainland">Lagos Mainland</option><option value="Lagos Island">Lagos Island</option><option value="Ikeja">Ikeja</option><option value="Surulere">Surulere</option><option value="Lekki / Ajah">Lekki / Ajah</option><option value="Other">Other</option></select>
+        </div>
       </div>
+      <div class="field"><label for="address">Home address</label>
+        <textarea id="address" name="address" placeholder="House number, street, area, Lagos"></textarea>
+      </div>
+      <div class="field"><label for="nin">NIN (11 digits)</label>
+        <input type="text" id="nin" name="nin" inputmode="numeric" maxlength="11" placeholder="12345678901" />
+        <p class="hint">We verify this against the national database.</p>
+      </div>
+
+      <div class="subhead">Your documents<span class="s">Photo or PDF. Hold the document flat, fill the frame, make sure the text is sharp.</span></div>
+
+      <div class="file-field">
+        <label>NIN slip or NIN card</label>
+        <label class="file-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span data-label>Tap to upload a photo or PDF</span><input type="file" id="ninDoc" accept="image/*,application/pdf" capture="environment" /></label>
+        <div class="file-status" id="ninDocStatus"></div>
+      </div>
+      <div class="file-field">
+        <label>Driver's licence or dispatch rider's card</label>
+        <label class="file-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span data-label>Tap to upload a photo or PDF</span><input type="file" id="licenseDoc" accept="image/*,application/pdf" capture="environment" /></label>
+        <div class="file-status" id="licenseDocStatus"></div>
+      </div>
+      <div class="file-field">
+        <label>Your selfie <span class="opt">(face clearly visible, no cap/sunglasses)</span></label>
+        <label class="file-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg><span data-label>Tap to take a selfie</span><input type="file" id="selfie" accept="image/*" capture="user" /></label>
+        <div class="file-status" id="selfieStatus"></div>
+      </div>
+      <div class="file-field" id="bikePapersWrap">
+        <label>Bike papers <span class="opt">(proof of ownership / registration)</span></label>
+        <label class="file-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span data-label>Tap to upload a photo or PDF</span><input type="file" id="bikePapers" accept="image/*,application/pdf" capture="environment" /></label>
+        <div class="file-status" id="bikePapersStatus"></div>
+      </div>
+
       <div class="subhead">Your bike</div>
       <div class="field"><label for="bikeStatus">Bike situation</label>
         <select id="bikeStatus" name="bikeStatus"><option value="I own my bike">I own my bike</option><option value="I need a bike (Pay As You Ride)">I need a bike (Pay As You Ride)</option></select>
       </div>
       <div class="grid-2">
-        <div class="field"><label for="bikeModel">Make &amp; model <span style="color:var(--muted);font-weight:400">(if you own one)</span></label><input type="text" id="bikeModel" name="bikeModel" placeholder="e.g. Bajaj Boxer" /></div>
-        <div class="field"><label for="plate">Plate number <span style="color:var(--muted);font-weight:400">(if you own one)</span></label><input type="text" id="plate" name="plate" placeholder="e.g. LAG-123-XYZ" /></div>
+        <div class="field"><label for="bikeModel">Make &amp; model <span class="opt">(if you own one)</span></label><input type="text" id="bikeModel" name="bikeModel" placeholder="e.g. Bajaj Boxer" /></div>
+        <div class="field"><label for="plate">Plate number <span class="opt">(if you own one)</span></label><input type="text" id="plate" name="plate" placeholder="e.g. LAG-123-XYZ" /></div>
+      </div>
+
+      <div class="subhead">Guarantor 1<span class="s">Someone who has known you a while and will vouch for you. We will call them.</span></div>
+      <div class="grid-2">
+        <div class="field"><label for="g1name">Full name</label><input type="text" id="g1name" name="g1name" /></div>
+        <div class="field"><label for="g1phone">Phone</label><input type="tel" id="g1phone" name="g1phone" placeholder="080..." inputmode="tel" /></div>
       </div>
       <div class="grid-2">
-        <div class="field"><label for="hasNin">Have a valid NIN?</label><select id="hasNin" name="hasNin"><option value="Yes">Yes</option><option value="No">No</option></select></div>
-        <div class="field"><label for="hasLicense">Have a Driver's License?</label><select id="hasLicense" name="hasLicense"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+        <div class="field"><label for="g1relationship">Relationship to you</label><input type="text" id="g1relationship" name="g1relationship" placeholder="e.g. employer, uncle, landlord" /></div>
+        <div class="field"><label for="g1nin">Their NIN (11 digits)</label><input type="text" id="g1nin" name="g1nin" inputmode="numeric" maxlength="11" placeholder="12345678901" /></div>
       </div>
-      <div class="subhead">Your guarantors</div>
+      <div class="field"><label for="g1address">Their home address</label><textarea id="g1address" name="g1address" placeholder="House number, street, area, Lagos"></textarea></div>
+      <div class="file-field">
+        <label>Guarantor 1 — NIN slip or NIN card</label>
+        <label class="file-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span data-label>Tap to upload a photo or PDF</span><input type="file" id="g1ninDoc" accept="image/*,application/pdf" capture="environment" /></label>
+        <div class="file-status" id="g1ninDocStatus"></div>
+      </div>
+
+      <div class="subhead">Guarantor 2<span class="s">A different person from Guarantor 1. We will call them too.</span></div>
       <div class="grid-2">
-        <div class="field"><label for="g1name">Guarantor 1 — name</label><input type="text" id="g1name" name="g1name" /></div>
-        <div class="field"><label for="g1phone">Guarantor 1 — phone</label><input type="tel" id="g1phone" name="g1phone" placeholder="080..." /></div>
+        <div class="field"><label for="g2name">Full name</label><input type="text" id="g2name" name="g2name" /></div>
+        <div class="field"><label for="g2phone">Phone</label><input type="tel" id="g2phone" name="g2phone" placeholder="080..." inputmode="tel" /></div>
       </div>
       <div class="grid-2">
-        <div class="field"><label for="g2name">Guarantor 2 — name</label><input type="text" id="g2name" name="g2name" /></div>
-        <div class="field"><label for="g2phone">Guarantor 2 — phone</label><input type="tel" id="g2phone" name="g2phone" placeholder="080..." /></div>
+        <div class="field"><label for="g2relationship">Relationship to you</label><input type="text" id="g2relationship" name="g2relationship" placeholder="e.g. employer, sister, pastor" /></div>
+        <div class="field"><label for="g2nin">Their NIN (11 digits)</label><input type="text" id="g2nin" name="g2nin" inputmode="numeric" maxlength="11" placeholder="12345678901" /></div>
       </div>
-      <label class="check-field"><input type="checkbox" id="confirm" /><span>I confirm I can provide my NIN/ID, a selfie, valid ID for both guarantors (and bike papers if I own a bike), and that the details above are true.</span></label>
-      <p class="error-text" id="riderError">Please fill your name, phone, both guarantors, and tick the confirmation box.</p>
-      <button type="submit" class="btn btn--block" id="riderSubmitBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Submit application</button>
-      <p class="alt-line">Prefer WhatsApp? <a id="riderWhatsAppLink">Send this application on WhatsApp instead</a></p>
-      <p class="mini">By submitting you agree to a background and guarantor check. We never share your documents outside verification.</p>
+      <div class="field"><label for="g2address">Their home address</label><textarea id="g2address" name="g2address" placeholder="House number, street, area, Lagos"></textarea></div>
+      <div class="file-field">
+        <label>Guarantor 2 — NIN slip or NIN card</label>
+        <label class="file-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span data-label>Tap to upload a photo or PDF</span><input type="file" id="g2ninDoc" accept="image/*,application/pdf" capture="environment" /></label>
+        <div class="file-status" id="g2ninDocStatus"></div>
+      </div>
+
+      <div class="subhead">Declaration</div>
+      <div class="consent-group">
+        <label class="check-field"><input type="checkbox" id="consentTruth" /><span>Every detail and document I have provided is genuine and belongs to me or my named guarantors. I understand that giving false information or a forged document ends my application and will be reported to the police.</span></label>
+        <label class="check-field"><input type="checkbox" id="consentVerify" /><span>I authorise Ngwanu Express to verify my NIN and driver's licence against official records, run a background check, and match my selfie to my ID.</span></label>
+        <label class="check-field"><input type="checkbox" id="consentGuarantor" /><span>Both guarantors have agreed to stand for me and to Ngwanu Express verifying their identity and calling them.</span></label>
+      </div>
+
+      <div class="upload-note" id="uploadNote"></div>
+      <p class="error-text" id="riderError">Please complete every field, upload the required documents, and tick all three boxes.</p>
+      <button type="submit" class="btn btn--block" id="riderSubmitBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Submit application &amp; documents</button>
+      <p class="alt-line">Can't upload right now? <a id="riderWhatsAppLink">Send your details on WhatsApp</a> and we'll collect documents by hand.</p>
+      <p class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Documents are stored privately and used only for verifying you. We never share them.</p>
     </form>
     <div class="booking-done" id="riderDone" hidden>
       <div class="done-check">✓</div>
-      <h3>Application received</h3>
-      <p>Your reference is <b id="riderRef"></b>. Our onboarding team will call or WhatsApp you on <b id="riderPhoneEcho"></b> within 3 days to collect your documents (NIN/ID, selfie, bike papers, guarantor IDs) and book your verification.</p>
+      <h3>Application &amp; documents received</h3>
+      <p>Your reference is <b id="riderRef"></b>. Our onboarding team will call or WhatsApp you on <b id="riderPhoneEcho"></b> within 3 days after we verify your ID and speak to your guarantors.</p>
       <button type="button" class="btn btn--ghost" id="riderAnother">Submit another application</button>
     </div>
   </div>
@@ -335,65 +424,271 @@ const CONTACT_PHONE = "+234 811 849 4314";
 const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const CUSTOMER_SITE_URL = "../";
 const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
+
+/* upload limits */
+const IMG_MAX_DIM = 1500;      /* px — longest edge after downscale */
+const IMG_QUALITY = 0.72;      /* JPEG quality */
+const PER_FILE_MAX = 8 * 1024 * 1024;   /* 8 MB per raw file before we complain */
+const TOTAL_B64_MAX = 30 * 1024 * 1024; /* ~30 MB total encoded payload ceiling */
+
 function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
 function openWhatsApp(url){ var win = window.open(url, "_blank"); if(!win || win.closed || typeof win.closed === "undefined"){ window.location.href = url; } }
 function makeRef(prefix){ return prefix + "-" + Date.now().toString().slice(-6); }
+function digits(s){ return (String(s).match(/\d/g) || []).length; }
+function kb(n){ return n < 1024*1024 ? Math.round(n/1024) + " KB" : (n/1024/1024).toFixed(1) + " MB"; }
+
 ["navCustomer","footCustomer"].forEach(function(id){ var el = document.getElementById(id); if(el) el.setAttribute("href", CUSTOMER_SITE_URL); });
 document.getElementById("footerPhone").textContent = CONTACT_PHONE;
 document.getElementById("footerPhone").setAttribute("href", "tel:" + CONTACT_PHONE.replace(/\s/g,""));
 document.getElementById("footerEmail").textContent = CONTACT_EMAIL;
 document.getElementById("footerEmail").setAttribute("href", "mailto:" + CONTACT_EMAIL);
+
 const form = document.getElementById("riderForm");
 const err = document.getElementById("riderError");
+const uploadNote = document.getElementById("uploadNote");
 const riderDone = document.getElementById("riderDone");
 const riderSubmitBtn = document.getElementById("riderSubmitBtn");
-const val = id => document.getElementById(id).value.trim();
-function buildRiderPayload(){
-  const bikeStatus = val("bikeStatus");
-  const bikeLine = bikeStatus === "I own my bike" ? (val("bikeModel") || "(model not given)") + " — " + (val("plate") || "(plate not given)") : "NEEDS A BIKE — Pay As You Ride";
-  return { type:"rider_application", ref:makeRef("NGX-R"), name:val("fullName"), phone:val("phone"), area:val("area"), bikeStatus:bikeStatus, bikeModel:val("bikeModel"), plate:val("plate"), bikeSummary:bikeLine, hasNin:val("hasNin"), hasLicense:val("hasLicense"), guarantor1:val("g1name")+" ("+val("g1phone")+")", guarantor2:val("g2name")+" ("+val("g2phone")+")", at:new Date().toISOString(), source:"website" };
+const val = id => (document.getElementById(id).value || "").trim();
+
+/* ---------- document handling ---------- */
+/* each file input id -> { name, mime, b64 }  once processed */
+const DOC_FIELDS = ["ninDoc","licenseDoc","selfie","bikePapers","g1ninDoc","g2ninDoc"];
+const docs = {};
+
+function readAsDataURL(file){
+  return new Promise(function(res, rej){
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error("read failed"));
+    r.readAsDataURL(file);
+  });
 }
-function riderMessage(p){
-  return "Hello NGWANU EXPRESS 🏍️  — Rider application " + p.ref + "\n\nName: " + p.name + "\nPhone: " + p.phone + "\nArea: " + p.area + "\n\nBike: " + p.bikeSummary + "\nHas NIN: " + p.hasNin + "  |  Has License: " + p.hasLicense + "\n\nGuarantor 1: " + p.guarantor1 + "\nGuarantor 2: " + p.guarantor2 + "\n\nI'm ready to send my NIN/ID, selfie, bike papers (if I own one) and guarantor IDs.";
+function loadImage(src){
+  return new Promise(function(res, rej){
+    const im = new Image();
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error("not an image"));
+    im.src = src;
+  });
 }
-function riderMissing(){
-  const req = ["fullName","phone","g1name","g1phone","g2name","g2phone"];
-  const empty = req.find(id => !val(id));
-  if(empty) return empty;
-  if(!document.getElementById("confirm").checked) return "confirm";
+/* returns { mime, b64 }  — images are downscaled + re-encoded as JPEG */
+async function processFile(file){
+  if(file.type === "application/pdf"){
+    if(file.size > PER_FILE_MAX) throw new Error("PDF is too large — upload a photo of the document instead.");
+    const dataURL = await readAsDataURL(file);
+    return { mime: "application/pdf", b64: dataURL.split(",")[1] };
+  }
+  if(!/^image\//.test(file.type)) throw new Error("Use a photo (JPG/PNG) or a PDF.");
+  const dataURL = await readAsDataURL(file);
+  let img;
+  try { img = await loadImage(dataURL); }
+  catch(e){ /* some phones give HEIC the browser can't decode */
+    throw new Error("Couldn't read that photo — try again, or switch your camera to “most compatible” / JPEG.");
+  }
+  let { width:w, height:h } = img;
+  const scale = Math.min(1, IMG_MAX_DIM / Math.max(w, h));
+  w = Math.round(w * scale); h = Math.round(h * scale);
+  const cv = document.createElement("canvas");
+  cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d");
+  cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h);
+  cx.drawImage(img, 0, 0, w, h);
+  const out = cv.toDataURL("image/jpeg", IMG_QUALITY);
+  return { mime: "image/jpeg", b64: out.split(",")[1] };
+}
+
+function wireFileInput(id){
+  const input = document.getElementById(id);
+  const status = document.getElementById(id + "Status");
+  const labelSpan = input.closest(".file-drop").querySelector("[data-label]");
+  input.addEventListener("change", async function(){
+    const file = input.files && input.files[0];
+    delete docs[id];
+    if(!file){ status.textContent = ""; status.className = "file-status"; return; }
+    status.textContent = "Preparing…"; status.className = "file-status busy";
+    try{
+      const r = await processFile(file);
+      const bytes = Math.ceil(r.b64.length * 3 / 4);
+      docs[id] = { name: (file.name || id).replace(/[^\w.\-]+/g, "_"), mime: r.mime, b64: r.b64 };
+      status.textContent = "✓ Ready · " + kb(bytes);
+      status.className = "file-status ok";
+      if(labelSpan) labelSpan.textContent = file.name ? ("Replace: " + file.name) : "Uploaded — tap to replace";
+    }catch(e){
+      status.textContent = e.message || "Couldn't use that file.";
+      status.className = "file-status bad";
+      input.value = "";
+    }
+  });
+}
+DOC_FIELDS.forEach(wireFileInput);
+
+/* bike papers only required if they own a bike */
+const bikeStatusEl = document.getElementById("bikeStatus");
+const bikePapersWrap = document.getElementById("bikePapersWrap");
+function syncBikePapers(){
+  const owns = bikeStatusEl.value === "I own my bike";
+  bikePapersWrap.style.display = owns ? "" : "none";
+}
+bikeStatusEl.addEventListener("change", syncBikePapers);
+syncBikePapers();
+
+/* ---------- validation ---------- */
+function firstProblem(){
+  const owns = bikeStatusEl.value === "I own my bike";
+  const need = [
+    ["fullName", "your full name"],
+    ["phone", "your phone number"],
+    ["dob", "your date of birth"],
+    ["address", "your home address"],
+    ["nin", "your NIN"],
+    ["g1name", "guarantor 1's name"],
+    ["g1phone", "guarantor 1's phone"],
+    ["g1relationship", "guarantor 1's relationship to you"],
+    ["g1nin", "guarantor 1's NIN"],
+    ["g1address", "guarantor 1's address"],
+    ["g2name", "guarantor 2's name"],
+    ["g2phone", "guarantor 2's phone"],
+    ["g2relationship", "guarantor 2's relationship to you"],
+    ["g2nin", "guarantor 2's NIN"],
+    ["g2address", "guarantor 2's address"]
+  ];
+  for(const [id, what] of need){
+    if(!val(id)) return { id, msg: "Please enter " + what + "." };
+  }
+  if(digits(val("phone")) < 7) return { id:"phone", msg:"Enter a valid phone number." };
+  for(const id of ["nin","g1nin","g2nin"]){
+    if(digits(val(id)) !== 11) return { id, msg:"NIN must be exactly 11 digits." };
+  }
+  if(digits(val("g1phone")) < 7) return { id:"g1phone", msg:"Enter a valid phone for guarantor 1." };
+  if(digits(val("g2phone")) < 7) return { id:"g2phone", msg:"Enter a valid phone for guarantor 2." };
+
+  const reqDocs = [
+    ["ninDoc", "a photo of your NIN"],
+    ["licenseDoc", "a photo of your licence or rider's card"],
+    ["selfie", "your selfie"],
+    ["g1ninDoc", "a photo of guarantor 1's NIN"],
+    ["g2ninDoc", "a photo of guarantor 2's NIN"]
+  ];
+  if(owns) reqDocs.splice(3, 0, ["bikePapers", "a photo of your bike papers"]);
+  for(const [id, what] of reqDocs){
+    if(!docs[id]) return { id, msg: "Please upload " + what + ".", isFile:true };
+  }
+  for(const id of ["consentTruth","consentVerify","consentGuarantor"]){
+    if(!document.getElementById(id).checked) return { id, msg:"Please tick all three boxes to continue." };
+  }
   return null;
 }
+
+function buildPayload(){
+  const owns = bikeStatusEl.value === "I own my bike";
+  const files = {};
+  DOC_FIELDS.forEach(function(id){
+    if(!docs[id]) return;
+    if(id === "bikePapers" && !owns) return;
+    const key = id === "g1ninDoc" ? "g1nin" : id === "g2ninDoc" ? "g2nin" : id;
+    files[key] = docs[id];
+  });
+  return {
+    type: "rider_application",
+    ref: makeRef("NGX-R"),
+    name: val("fullName"), phone: val("phone"), dob: val("dob"),
+    address: val("address"), area: val("area"), nin: val("nin"),
+    bikeStatus: bikeStatusEl.value, bikeModel: val("bikeModel"), plate: val("plate"),
+    g1name: val("g1name"), g1phone: val("g1phone"), g1address: val("g1address"),
+    g1relationship: val("g1relationship"), g1nin: val("g1nin"),
+    g2name: val("g2name"), g2phone: val("g2phone"), g2address: val("g2address"),
+    g2relationship: val("g2relationship"), g2nin: val("g2nin"),
+    consentTruth: document.getElementById("consentTruth").checked,
+    consentVerify: document.getElementById("consentVerify").checked,
+    consentGuarantor: document.getElementById("consentGuarantor").checked,
+    files: files,
+    at: new Date().toISOString(),
+    source: "website"
+  };
+}
+
+function riderMessage(p){
+  return "Hello NGWANU EXPRESS 🏍️  — Rider application " + p.ref +
+    "\n\nName: " + p.name + "\nPhone: " + p.phone + "\nDOB: " + p.dob +
+    "\nAddress: " + p.address + "\nArea: " + p.area + "\nNIN: " + p.nin +
+    "\n\nBike: " + (p.bikeStatus === "I own my bike" ? ((p.bikeModel||"?") + " / " + (p.plate||"?")) : "NEEDS A BIKE (Pay As You Ride)") +
+    "\n\nGuarantor 1: " + p.g1name + " (" + p.g1phone + "), " + p.g1relationship + ", NIN " + p.g1nin + ", " + p.g1address +
+    "\nGuarantor 2: " + p.g2name + " (" + p.g2phone + "), " + p.g2relationship + ", NIN " + p.g2nin + ", " + p.g2address +
+    "\n\nI could not upload documents on the site — please tell me how to send my NIN, licence, selfie and my guarantors' NIN.";
+}
+
 function showRiderDone(p){
   document.getElementById("riderRef").textContent = p.ref;
   document.getElementById("riderPhoneEcho").textContent = p.phone;
   form.hidden = true; riderDone.hidden = false;
   riderDone.scrollIntoView({ behavior:"smooth", block:"center" });
 }
+function flagProblem(bad){
+  err.textContent = bad.msg;
+  err.style.display = "block";
+  const el = document.getElementById(bad.id);
+  if(el){ (bad.isFile ? el.closest(".file-field") : el).scrollIntoView({ behavior:"smooth", block:"center" });
+          if(!bad.isFile) el.focus({ preventScroll:true }); }
+}
+
 form.addEventListener("submit", function(e){
   e.preventDefault();
-  const miss = riderMissing();
-  if(miss){ err.style.display = "block"; document.getElementById(miss === "confirm" ? "confirm" : miss).focus(); return; }
+  const bad = firstProblem();
+  if(bad){ flagProblem(bad); return; }
   err.style.display = "none";
-  const p = buildRiderPayload();
+
+  const p = buildPayload();
+
+  /* payload size guard */
+  let total = 0;
+  Object.keys(p.files).forEach(k => total += p.files[k].b64.length);
+  if(total > TOTAL_B64_MAX){
+    uploadNote.textContent = "Your photos add up to about " + kb(total*0.75) + ", which is too big to send at once. Re-take them a bit further from the document, or upload smaller images.";
+    uploadNote.className = "upload-note show";
+    uploadNote.scrollIntoView({ behavior:"smooth", block:"center" });
+    return;
+  }
+
   if(!FORM_ENDPOINT){ openWhatsApp(waLink(riderMessage(p))); return; }
+
   riderSubmitBtn.disabled = true;
   const label = riderSubmitBtn.innerHTML;
-  riderSubmitBtn.textContent = "Sending…";
+  riderSubmitBtn.textContent = "Uploading documents… please keep this page open";
+  uploadNote.textContent = "Sending your application and " + Object.keys(p.files).length + " documents. On slow data this can take up to a minute.";
+  uploadNote.className = "upload-note show";
+
   fetch(FORM_ENDPOINT, { method:"POST", mode:"no-cors", body: JSON.stringify(p) })
-    .then(function(){ showRiderDone(p); })
-    .catch(function(){ err.textContent = "Couldn't send your application — check your connection and try again, or use the WhatsApp link below."; err.style.display = "block"; })
+    .then(function(){ uploadNote.className = "upload-note"; showRiderDone(p); })
+    .catch(function(){
+      err.textContent = "Couldn't send your application — check your connection and try again, or use the WhatsApp link below.";
+      err.style.display = "block";
+      uploadNote.className = "upload-note";
+    })
     .finally(function(){ riderSubmitBtn.disabled = false; riderSubmitBtn.innerHTML = label; });
 });
+
 document.getElementById("riderWhatsAppLink").addEventListener("click", function(e){
   e.preventDefault();
-  const miss = riderMissing();
-  if(miss){ err.style.display = "block"; document.getElementById(miss === "confirm" ? "confirm" : miss).focus(); return; }
-  openWhatsApp(waLink(riderMessage(buildRiderPayload())));
+  /* WhatsApp fallback: text details only, no file upload */
+  const need = ["fullName","phone","g1name","g1phone","g2name","g2phone"];
+  const miss = need.find(id => !val(id));
+  if(miss){ err.textContent = "Fill at least your name, phone and both guarantors first."; err.style.display = "block"; document.getElementById(miss).focus(); return; }
+  openWhatsApp(waLink(riderMessage(buildPayload())));
 });
+
 document.getElementById("riderAnother").addEventListener("click", function(){
-  form.reset(); riderDone.hidden = true; form.hidden = false;
+  form.reset();
+  DOC_FIELDS.forEach(id => { delete docs[id];
+    const st = document.getElementById(id + "Status"); if(st){ st.textContent=""; st.className="file-status"; }
+    const ls = document.getElementById(id).closest(".file-drop").querySelector("[data-label]");
+    if(ls) ls.textContent = id === "selfie" ? "Tap to take a selfie" : "Tap to upload a photo or PDF";
+  });
+  uploadNote.className = "upload-note";
+  syncBikePapers();
+  riderDone.hidden = true; form.hidden = false;
   form.scrollIntoView({ behavior:"smooth", block:"center" });
 });
+
 document.getElementById("footerWhatsApp").setAttribute("href", waLink("Hello NGWANU EXPRESS 🏍️ I have a question about riding with you."));
 const navToggle = document.getElementById("navToggle");
 const nav = document.getElementById("nav");
