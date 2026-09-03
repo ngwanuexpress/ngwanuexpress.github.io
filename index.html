@@ -310,6 +310,7 @@ const PRICING = { base: 800, spread: 700, Food: 0, Parcel: 300, Document: 0, Gro
 const naira = n => "₦" + n.toLocaleString("en-NG");
 function computeEstimate(t){ const e = PRICING[t]||0, low = PRICING.base+e, high = low+PRICING.spread; return { low, high, label: naira(low)+" – "+naira(high) }; }
 function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
+function openWhatsApp(url){ var win = window.open(url, "_blank"); if(!win || win.closed || typeof win.closed === "undefined"){ window.location.href = url; } }
 ["navRider","heroRider","bandRider","footRider"].forEach(function(id){ var el = document.getElementById(id); if(el) el.setAttribute("href", RIDER_SITE_URL); });
 document.getElementById("footerPhone").textContent = CONTACT_PHONE;
 document.getElementById("footerPhone").setAttribute("href", "tel:" + CONTACT_PHONE.replace(/\s/g,""));
@@ -351,7 +352,7 @@ bookForm.addEventListener("submit", function(e){
   const dropoffPin = pinCoords.dropoff ? "\n📍 Drop-off pin: https://maps.google.com/?q=" + pinCoords.dropoff : "";
   if(FORM_ENDPOINT){ fetch(FORM_ENDPOINT, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ type:"booking", pickup, dropoff, item, estimate: est, pickupCoords: pinCoords.pickup, dropoffCoords: pinCoords.dropoff, at: new Date().toISOString() }) }).catch(function(){}); }
   const message = "Hello NGWANU EXPRESS 👋\n\nI'd like to book a delivery:\n\n📍 Pickup: " + pickup + pickupPin + "\n🎯 Drop-off: " + dropoff + dropoffPin + "\n📦 Item type: " + item + "\n💰 Estimated fare: " + est + "\n\nPlease send a rider.";
-  window.open(waLink(message), "_blank");
+  openWhatsApp(waLink(message));
 });
 document.getElementById("footerWhatsApp").setAttribute("href", waLink("Hello NGWANU EXPRESS 👋 I have a question about a delivery."));
 const navToggle = document.getElementById("navToggle");
