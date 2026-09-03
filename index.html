@@ -330,17 +330,7 @@ const WHATSAPP_NUMBER = "2348118494314";
 const CONTACT_PHONE = "+234 811 849 4314";
 const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const RIDER_SITE_URL = "ride/";
-/* 3) ONLINE BOOKING ENDPOINT — paste your Google Apps Script Web App URL here to
-   make bookings complete on the site. Apps Script doPost:
-     function doPost(e){ var s=SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-       var d=JSON.parse(e.postData.contents);
-       s.appendRow([new Date(),d.type,d.ref,d.name,d.phone,d.pickup,d.dropoff,d.item,
-         d.estimate,d.pickupCoords,d.dropoffCoords,d.bikeStatus,d.area,d.guarantor1,
-         d.guarantor2,d.hasNin,d.hasLicense]);
-       return ContentService.createTextOutput("ok"); }
-   Deploy → Web app → Execute as Me → Access: Anyone → copy URL below.
-   Leave "" to fall back to WhatsApp. */
-const FORM_ENDPOINT = "";
+const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
 const PRICING = { base: 800, spread: 700, Food: 0, Parcel: 300, Document: 0, Grocery: 600 };
 const naira = n => "₦" + n.toLocaleString("en-NG");
 function computeEstimate(t){ const e = PRICING[t]||0, low = PRICING.base+e, high = low+PRICING.spread; return { low, high, label: naira(low)+" – "+naira(high) }; }
