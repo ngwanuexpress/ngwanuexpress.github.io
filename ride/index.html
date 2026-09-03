@@ -324,6 +324,7 @@ const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const CUSTOMER_SITE_URL = "../";
 const FORM_ENDPOINT = "";
 function waLink(msg){ return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg); }
+function openWhatsApp(url){ var win = window.open(url, "_blank"); if(!win || win.closed || typeof win.closed === "undefined"){ window.location.href = url; } }
 ["navCustomer","footCustomer"].forEach(function(id){ var el = document.getElementById(id); if(el) el.setAttribute("href", CUSTOMER_SITE_URL); });
 document.getElementById("footerPhone").textContent = CONTACT_PHONE;
 document.getElementById("footerPhone").setAttribute("href", "tel:" + CONTACT_PHONE.replace(/\s/g,""));
@@ -345,7 +346,7 @@ form.addEventListener("submit", function(e){
   const message = "Hello NGWANU EXPRESS 🏍️  — Rider application\n\nName: " + data.fullName + "\nPhone: " + data.phone + "\nArea: " + data.area + "\n\n" + bikeLine + "\nHas NIN: " + data.hasNin + "  |  Has License: " + data.hasLicense + "\n\nGuarantor 1: " + data.guarantor1 + "\nGuarantor 2: " + data.guarantor2 + "\n\nI'm ready to send my NIN/ID, selfie, bike papers (if I own one) and guarantor IDs.";
   ok.classList.add("show");
   ok.scrollIntoView({behavior:"smooth", block:"center"});
-  window.open(waLink(message), "_blank");
+  openWhatsApp(waLink(message));
 });
 document.getElementById("footerWhatsApp").setAttribute("href", waLink("Hello NGWANU EXPRESS 🏍️ I have a question about riding with you."));
 const navToggle = document.getElementById("navToggle");
