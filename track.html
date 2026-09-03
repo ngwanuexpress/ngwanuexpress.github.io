@@ -29,6 +29,8 @@ a{color:inherit}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
 .ref{font-family:Fraunces,serif;font-size:1.5rem}
 .pill{background:rgba(1,68,46,.1);color:var(--green);font-weight:700;font-size:.76rem;padding:6px 12px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+.pill.cancelled{background:rgba(220,38,38,.12);color:#c81e1e}
+.cancel-note{margin:18px 0 0;color:#c81e1e;font-weight:600;font-size:.95rem}
 .eta{margin:14px 0 4px;font-size:.95rem;color:var(--muted)}
 .eta b{font-family:Fraunces,serif;font-weight:600;color:var(--ink);font-size:1.15rem}
 .steps{list-style:none;margin:22px 0 0;padding:0}
@@ -74,6 +76,8 @@ a{color:inherit}
       <li data-step="On the way"><span class="dot"></span><strong>On the way</strong><small>Heading to the drop-off</small></li>
       <li data-step="Delivered"><span class="dot"></span><strong>Delivered</strong><small>Handed over at the destination</small></li>
     </ul>
+
+    <p class="cancel-note" id="cancelNote" hidden>This delivery was cancelled. Message dispatch if you think this is a mistake.</p>
 
     <div class="route" id="route" hidden>
       <div><small>Pickup</small><span id="pickupVal"></span></div>
@@ -137,6 +141,11 @@ function render(d){
   var status = d.status;
   $("statusPill").textContent = status;
 
+  var cancelled = /cancel/i.test(status);
+  $("statusPill").classList.toggle("cancelled", cancelled);
+  $("cancelNote").hidden = !cancelled;
+  $("steps").hidden = cancelled;
+
   if(d.eta){ $("etaVal").textContent = d.eta; $("etaLine").hidden = false; }
   else { $("etaLine").hidden = true; }
 
@@ -150,7 +159,6 @@ function render(d){
   }
 
   var idx = STEP_ORDER.indexOf(status);
-  var cancelled = /cancel/i.test(status);
   [].forEach.call($("steps").children, function(li, i){
     li.classList.remove("done","current");
     if(cancelled) return;
