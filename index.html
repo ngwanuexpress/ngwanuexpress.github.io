@@ -277,6 +277,7 @@ section{padding:92px 0;border-top:1px solid var(--line)}
       <h3>Booking received</h3>
       <p>Your reference is <b id="bookRef"></b>. A dispatcher will call or WhatsApp you on <b id="bookPhoneEcho"></b> within a few minutes to confirm your rider and the final price.</p>
       <dl id="bookSummary"></dl>
+      <a id="trackBtn" class="btn btn--accent btn--block" target="_blank" rel="noopener" style="margin-bottom:12px">Track this delivery</a>
       <button type="button" class="btn btn--ghost" id="bookAnother">Book another delivery</button>
     </div>
   </div>
@@ -477,7 +478,7 @@ function buildPayload(){
 }
 function bookingMessage(p){
   const pin = c => c ? "\nmaps.google.com/?q=" + c : "";
-  return "Hello NGWANU EXPRESS 👋\n\nNew booking — " + p.ref + "\n\nName: " + p.name + "\nPhone: " + p.phone + "\n\n📍 Pickup: " + p.pickup + pin(p.pickupCoords) + "\n🎯 Drop-off: " + p.dropoff + pin(p.dropoffCoords) + "\n📦 Item type: " + p.item + "\n💰 Estimated fare: " + p.estimate + "\n\nPlease send a rider.";
+  return "Hello NGWANU EXPRESS 👋\n\nNew booking — " + p.ref + "\n\nName: " + p.name + "\nPhone: " + p.phone + "\n\n📍 Pickup: " + p.pickup + pin(p.pickupCoords) + "\n🎯 Drop-off: " + p.dropoff + pin(p.dropoffCoords) + "\n📦 Item type: " + p.item + "\n💰 Estimated fare: " + p.estimate + "\n\nPlease send a rider." + "\n\n🔗 Track it live: https://ngwanuexpress.github.io/track.html?ref=" + p.ref;
 }
 function validate(p){
   if(!p.name) return { field:"custName", msg:"Please enter your name." };
@@ -490,6 +491,8 @@ function showBookingDone(p){
   document.getElementById("bookRef").textContent = p.ref;
   document.getElementById("bookPhoneEcho").textContent = p.phone;
   document.getElementById("bookSummary").innerHTML = "<dt>Pickup</dt><dd>" + esc(p.pickup) + "</dd><dt>Drop-off</dt><dd>" + esc(p.dropoff) + "</dd><dt>Item</dt><dd>" + esc(p.item) + "</dd><dt>Estimated fare</dt><dd>" + esc(p.estimate) + "</dd>";
+  var _tb = document.getElementById("trackBtn");
+  if (_tb) _tb.href = "https://ngwanuexpress.github.io/track.html?ref=" + encodeURIComponent(p.ref);
   bookForm.hidden = true; bookingDone.hidden = false;
   bookingDone.scrollIntoView({ behavior:"smooth", block:"center" });
 }

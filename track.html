@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Track your delivery — NGWANU EXPRESS</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --green:#01442E; --green-deep:#0C3325; --green-hover:#0A5A3C;
+  --orange:#E08020; --gold:#C89028;
+  --ink:#181818; --muted:#5c5c5c; --line:rgba(0,0,0,.14);
+  --paper:#faf8f3; --radius:16px;
+  --shadow:0 20px 50px -24px rgba(12,51,37,.34);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--paper);line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.1;margin:0;letter-spacing:-.01em}
+a{color:inherit}
+.strip{background:var(--green-deep);color:#fff;font-size:.82rem;font-weight:500;text-align:center;padding:9px 16px}
+.strip b{color:var(--orange)}
+.wrap{max-width:560px;margin:0 auto;padding:26px 20px 60px}
+.brand{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-family:Fraunces,serif;font-weight:700;font-size:1.3rem;letter-spacing:-.02em;margin-bottom:24px}
+.brand .g{color:var(--green)} .brand .o{color:var(--orange)}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.ref{font-family:Fraunces,serif;font-size:1.5rem}
+.pill{background:rgba(1,68,46,.1);color:var(--green);font-weight:700;font-size:.76rem;padding:6px 12px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+.eta{margin:14px 0 4px;font-size:.95rem;color:var(--muted)}
+.eta b{font-family:Fraunces,serif;font-weight:600;color:var(--ink);font-size:1.15rem}
+.steps{list-style:none;margin:22px 0 0;padding:0}
+.steps li{position:relative;padding:0 0 22px 34px;color:var(--muted)}
+.steps li::before{content:"";position:absolute;left:9px;top:20px;bottom:-2px;width:2px;background:var(--line)}
+.steps li:last-child::before{display:none}
+.steps li .dot{position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--line)}
+.steps li.done{color:var(--ink)}
+.steps li.done .dot{border-color:var(--green);background:var(--green)}
+.steps li.current{color:var(--ink);font-weight:600}
+.steps li.current .dot{border-color:var(--orange);box-shadow:0 0 0 4px rgba(224,128,32,.18)}
+.steps li strong{display:block;font-weight:inherit}
+.steps li small{color:var(--muted);font-weight:400}
+.route{margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);font-size:.92rem}
+.route div{margin:6px 0}
+.route small{display:block;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;background:var(--green);color:#fff;border:2px solid var(--green);font-weight:600;font-size:1rem;padding:14px 24px;border-radius:999px;text-decoration:none;cursor:pointer;margin-top:20px;transition:background .16s}
+.btn:hover{background:var(--green-hover);border-color:var(--green-hover)}
+.meta{margin-top:16px;font-size:.8rem;color:var(--muted);text-align:center}
+.meta button{background:none;border:0;color:var(--green);font:inherit;font-weight:600;cursor:pointer;text-decoration:underline;padding:0}
+.msg{text-align:center;padding:30px 10px;color:var(--muted)}
+.msg h2{color:var(--ink);margin-bottom:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="strip"><b>Ngwanu…</b> we move it! · Live delivery tracking</div>
+<div class="wrap">
+  <a class="brand" href="/"><span class="g">NGWANU</span> <span class="o">EXPRESS</span></a>
+
+  <div class="card" id="card" hidden>
+    <div class="top">
+      <span class="ref" id="ref">—</span>
+      <span class="pill" id="statusPill">Loading…</span>
+    </div>
+    <p class="eta" id="etaLine" hidden>Estimated arrival: <b id="etaVal"></b></p>
+    <p class="eta" id="riderLine" hidden>Rider: <b id="riderVal"></b></p>
+
+    <ul class="steps" id="steps">
+      <li data-step="Received"><span class="dot"></span><strong>Booking received</strong><small>We've got your request</small></li>
+      <li data-step="Rider assigned"><span class="dot"></span><strong>Rider assigned</strong><small>A verified rider is on the way to pickup</small></li>
+      <li data-step="Picked up"><span class="dot"></span><strong>Picked up</strong><small>Your item is with the rider</small></li>
+      <li data-step="On the way"><span class="dot"></span><strong>On the way</strong><small>Heading to the drop-off</small></li>
+      <li data-step="Delivered"><span class="dot"></span><strong>Delivered</strong><small>Handed over at the destination</small></li>
+    </ul>
+
+    <div class="route" id="route" hidden>
+      <div><small>Pickup</small><span id="pickupVal"></span></div>
+      <div><small>Drop-off</small><span id="dropoffVal"></span></div>
+    </div>
+
+    <a class="btn" id="waBtn" target="_blank" rel="noopener">Message dispatch on WhatsApp</a>
+    <p class="meta">Updates automatically · <span id="updated">just now</span> · <button id="refreshBtn" type="button">Refresh</button></p>
+  </div>
+
+  <div class="card msg" id="loading"><p>Loading your delivery…</p></div>
+
+  <div class="card msg" id="notFound" hidden>
+    <h2>Can't find that delivery</h2>
+    <p>Double-check the link, or message dispatch and we'll sort it out.</p>
+    <a class="btn" id="waBtnFallback" target="_blank" rel="noopener">Message on WhatsApp</a>
+  </div>
+</div>
+
+<script>
+// ==== CONFIG ====
+// Your Google Apps Script web-app URL (same deployment as the booking form, once doGet is added).
+var TRACK_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
+var WHATSAPP = "2348104144819"; // dispatch WhatsApp number, digits only
+var POLL_MS = 20000;
+var STEP_ORDER = ["Received","Rider assigned","Picked up","On the way","Delivered"];
+
+var params = new URLSearchParams(location.search);
+var ref = (params.get("ref") || params.get("id") || "").trim().toUpperCase();
+
+var $ = function(id){ return document.getElementById(id); };
+var waText = function(t){ return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(t); };
+
+$("waBtnFallback").href = waText("Hello NGWANU EXPRESS 👋 I need help tracking a delivery.");
+
+if(!ref){ showNotFound(); }
+else { load(); setInterval(load, POLL_MS); }
+
+function showNotFound(){
+  $("loading").hidden = true; $("card").hidden = true; $("notFound").hidden = false;
+}
+
+function load(){
+  fetch(TRACK_ENDPOINT + "?ref=" + encodeURIComponent(ref), { method:"GET" })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || d.ok === false || !d.status){ showNotFound(); return; }
+      render(d);
+    })
+    .catch(function(){
+      // keep whatever is on screen; just note we couldn't refresh
+      if($("card").hidden && $("notFound").hidden){ /* first load failed */ }
+      $("updated").textContent = "couldn't refresh — retrying";
+    });
+}
+
+function render(d){
+  $("loading").hidden = true; $("notFound").hidden = true; $("card").hidden = false;
+
+  $("ref").textContent = d.ref || ref;
+  var status = d.status;
+  $("statusPill").textContent = status;
+
+  if(d.eta){ $("etaVal").textContent = d.eta; $("etaLine").hidden = false; }
+  else { $("etaLine").hidden = true; }
+
+  if(d.rider){ $("riderVal").textContent = d.rider; $("riderLine").hidden = false; }
+  else { $("riderLine").hidden = true; }
+
+  if(d.pickup || d.dropoff){
+    $("pickupVal").textContent = d.pickup || "—";
+    $("dropoffVal").textContent = d.dropoff || "—";
+    $("route").hidden = false;
+  }
+
+  var idx = STEP_ORDER.indexOf(status);
+  var cancelled = /cancel/i.test(status);
+  [].forEach.call($("steps").children, function(li, i){
+    li.classList.remove("done","current");
+    if(cancelled) return;
+    if(i < idx) li.classList.add("done");
+    else if(i === idx){ li.classList.add("current"); li.classList.add("done"); }
+  });
+
+  $("waBtn").href = waText("Hello NGWANU EXPRESS 👋 Checking on delivery " + (d.ref || ref) + " (status: " + status + ").");
+
+  var when = d.updatedAt ? new Date(d.updatedAt) : new Date();
+  $("updated").textContent = "updated " + when.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+}
+
+$("refreshBtn").addEventListener("click", load);
+</script>
+</body>
+</html>
