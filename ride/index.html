@@ -169,6 +169,8 @@ section{padding:92px 0;border-top:1px solid var(--line)}
 .site-footer h4{font-family:Inter,sans-serif;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:#8aa398;margin:0 0 14px}
 .site-footer a{display:block;text-decoration:none;color:#d6ded9;padding:6px 0;font-size:.96rem}
 .site-footer a:hover{color:var(--orange)}
+.site-footer .contact-link{display:flex;align-items:center;gap:9px}
+.site-footer .contact-link svg{width:16px;height:16px;flex:none;color:var(--orange)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.14);margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.85rem;color:#8aa398}
 @media (max-width:960px){
   .hero-grid,.req-grid,.apply-grid{grid-template-columns:1fr;gap:40px}
@@ -202,7 +204,7 @@ section{padding:92px 0;border-top:1px solid var(--line)}
 </style>
 </head>
 <body id="top">
-<div class="strip">Recruiting riders across <b>Lagos</b> &nbsp;•&nbsp; Weekly payouts &nbsp;•&nbsp; Pay As You Ride — own your bike &nbsp;•&nbsp; 🇳🇬</div>
+<div class="strip"><b>Ngwanu riders wanted!</b> &nbsp;•&nbsp; Steady pay, real hustle — own your bike, ride your way &nbsp;•&nbsp; 🏍️💰</div>
 <header class="site-header">
   <div class="container header-inner">
     <a href="#top" class="logo">
@@ -429,13 +431,13 @@ section{padding:92px 0;border-top:1px solid var(--line)}
       </div>
       <div>
         <h4>Contact</h4>
-        <a href="#" id="footerWhatsApp" target="_blank" rel="noopener">Chat on WhatsApp</a>
-        <a id="footerPhone" href="tel:+2348118494314">+234 811 849 4314</a>
-        <a id="footerEmail" href="mailto:ngwanuexpress@gmail.com">ngwanuexpress@gmail.com</a>
-        <a href="#top">📍 Lagos, Nigeria</a>
+        <a href="#" id="footerWhatsApp" class="contact-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg><span>Chat on WhatsApp</span></a>
+        <a id="footerPhone" class="contact-link" href="tel:+2348118494314"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg><span>+234 811 849 4314</span></a>
+        <a id="footerEmail" class="contact-link" href="mailto:ngwanuexpress@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg><span>ngwanuexpress@gmail.com</span></a>
+        <a href="#top" class="contact-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Lagos, Nigeria</span></a>
       </div>
     </div>
-    <div class="footer-bottom"><span>© 2026 Ngwanu Express. All rights reserved.</span><span>Lagos • Nigeria 🇳🇬</span></div>
+    <div class="footer-bottom"><span>© 2026 Ngwanu Express. All rights reserved.</span><a href="../privacy.html">Privacy Policy</a><span>Lagos • Nigeria 🇳🇬</span></div>
   </div>
 </footer>
 <script>
@@ -461,9 +463,9 @@ function digits(s){ return (String(s).match(/\d/g) || []).length; }
 function kb(n){ return n < 1024*1024 ? Math.round(n/1024) + " KB" : (n/1024/1024).toFixed(1) + " MB"; }
 
 ["navCustomer","footCustomer"].forEach(function(id){ var el = document.getElementById(id); if(el) el.setAttribute("href", CUSTOMER_SITE_URL); });
-document.getElementById("footerPhone").textContent = CONTACT_PHONE;
+document.querySelector("#footerPhone span").textContent = CONTACT_PHONE;
 document.getElementById("footerPhone").setAttribute("href", "tel:" + CONTACT_PHONE.replace(/\s/g,""));
-document.getElementById("footerEmail").textContent = CONTACT_EMAIL;
+document.querySelector("#footerEmail span").textContent = CONTACT_EMAIL;
 document.getElementById("footerEmail").setAttribute("href", "mailto:" + CONTACT_EMAIL);
 
 const form = document.getElementById("riderForm");
