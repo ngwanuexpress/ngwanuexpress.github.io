@@ -1,0 +1,16 @@
+{
+  "name": "Ngwanu Express",
+  "short_name": "Ngwanu",
+  "description": "Book a motorbike delivery across Lagos in minutes.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8f3",
+  "theme_color": "#01442E",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
