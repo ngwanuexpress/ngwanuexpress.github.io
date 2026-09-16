@@ -6,6 +6,12 @@
 <title>NGWANU EXPRESS — Ngwanu… we move it!</title>
 <meta name="description" content="NGWANU EXPRESS — food, parcels and documents delivered door-to-door across Lagos in under 60 minutes. ID-verified riders, guarantor-checked, live tracking on every trip." />
 <meta name="theme-color" content="#01442E" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Ngwanu Express" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -538,6 +544,8 @@ const navToggle = document.getElementById("navToggle");
 const nav = document.getElementById("nav");
 navToggle.addEventListener("click", function(){ const open = nav.classList.toggle("open"); navToggle.setAttribute("aria-expanded", open ? "true" : "false"); });
 nav.addEventListener("click", function(e){ if(e.target.tagName === "A"){ nav.classList.remove("open"); navToggle.setAttribute("aria-expanded","false"); } });
+
+if ("serviceWorker" in navigator) { window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
 </script>
 </body>
 </html>
