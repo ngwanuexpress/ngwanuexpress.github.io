@@ -351,6 +351,9 @@ const WHATSAPP_NUMBER = "2348118494314";
 const CONTACT_PHONE = "+234 811 849 4314";
 const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const RIDER_SITE_URL = "ride/";
+const N8N_WEBHOOK_URL = "https://ngwanuexpress.app.n8n.cloud/webhook/afbb22b0-b4d8-4717-ac0a-ef6bd9175355";
+function notifyN8N(payload){ if(!N8N_WEBHOOK_URL) return; try{ fetch(N8N_WEBHOOK_URL, { method:"POST", mode:"no-cors", body: JSON.stringify(payload) }).catch(function(){}); }catch(e){} }
+
 const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
 const PRICING = { base:900, freeKm:2, perKm:150, minFare:900, roundTo:50, rangePct:0.10, roadFactor:1.4, surcharge:{Food:200,Parcel:200,Document:0,Grocery:400} };
 const OSRM = "https://router.project-osrm.org/route/v1/driving/";
@@ -502,6 +505,7 @@ bookForm.addEventListener("submit", function(e){
   const bad = validate(p);
   if(bad){ formError.textContent = bad.msg; formError.style.display = "block"; document.getElementById(bad.field).focus(); return; }
   formError.style.display = "none";
+  notifyN8N(p);
   if(!FORM_ENDPOINT){ openWhatsApp(waLink(bookingMessage(p))); return; }
   bookSubmitBtn.disabled = true;
   const label = bookSubmitBtn.innerHTML;
