@@ -423,6 +423,9 @@ const WHATSAPP_NUMBER = "2348118494314";
 const CONTACT_PHONE = "+234 811 849 4314";
 const CONTACT_EMAIL = "ngwanuexpress@gmail.com";
 const CUSTOMER_SITE_URL = "../";
+const N8N_WEBHOOK_URL = "https://ngwanuexpress.app.n8n.cloud/webhook/afbb22b0-b4d8-4717-ac0a-ef6bd9175355";
+function notifyN8N(payload){ if(!N8N_WEBHOOK_URL) return; try{ fetch(N8N_WEBHOOK_URL, { method:"POST", mode:"no-cors", body: JSON.stringify(payload) }).catch(function(){}); }catch(e){} }
+
 const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzzpk7z1yZ5OFA9dlAQwuPWteeui7mXOF_weIgOzP3tEDRisA_QNIVXBez_B_tVAsZK/exec";
 
 /* upload limits */
@@ -638,6 +641,7 @@ form.addEventListener("submit", function(e){
   err.style.display = "none";
 
   const p = buildPayload();
+  notifyN8N(p);
 
   /* payload size guard */
   let total = 0;
