@@ -53,6 +53,17 @@ th{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mu
 .contact-box a{font-weight:600}
 footer{border-top:1px solid var(--line);padding:24px 0;font-size:.85rem;color:var(--muted)}
 footer a{color:var(--muted)}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;transform:none}}
+@media (max-width:640px){
+  table,thead,tbody,tr{display:block}
+  table tr:first-child{display:none}
+  tr{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+  td{display:block;border-bottom:1px dashed var(--line);padding:10px 0}
+  td:last-child{border-bottom:0}
+  td::before{content:attr(data-label);display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:3px}
+}
 @media (prefers-color-scheme: dark){
   :root{
     --green:#2E8B57; --green-deep:#132A1F; --green-hover:#3AA06A;
@@ -110,11 +121,11 @@ footer a{color:var(--muted)}
   <p>We're a small operation and use the following services to run the business. Each only receives the minimum it needs to do its job:</p>
   <table>
     <tr><th>Service</th><th>What it receives</th><th>Why</th></tr>
-    <tr><td>Google Sheets &amp; Google Drive</td><td>Every field you submit, and your uploaded documents</td><td>Our private booking and applicant records, stored in an access-controlled Google account only Ngwanu Express staff can open</td></tr>
-    <tr><td>OSRM (router.project-osrm.org)</td><td>Pickup/drop-off coordinates only</td><td>Calculates the road distance to work out your fare — never sent your name or phone</td></tr>
-    <tr><td>Photon / Komoot</td><td>The text you type into an address field</td><td>Suggests matching street addresses as you type</td></tr>
-    <tr><td>Telegram</td><td>A summary of each booking or application</td><td>Sends an instant alert to our internal dispatch team so we can respond fast</td></tr>
-    <tr><td>n8n (automation)</td><td>Passes the above summary through to Telegram</td><td>Internal plumbing only — nothing is sold, shared publicly, or used for advertising</td></tr>
+    <tr><td data-label="Service">Google Sheets &amp; Google Drive</td><td data-label="What it receives">Every field you submit, and your uploaded documents</td><td data-label="Why">Our private booking and applicant records, stored in an access-controlled Google account only Ngwanu Express staff can open</td></tr>
+    <tr><td data-label="Service">OSRM (router.project-osrm.org)</td><td data-label="What it receives">Pickup/drop-off coordinates only</td><td data-label="Why">Calculates the road distance to work out your fare — never sent your name or phone</td></tr>
+    <tr><td data-label="Service">Photon / Komoot</td><td data-label="What it receives">The text you type into an address field</td><td data-label="Why">Suggests matching street addresses as you type</td></tr>
+    <tr><td data-label="Service">Telegram</td><td data-label="What it receives">A summary of each booking or application</td><td data-label="Why">Sends an instant alert to our internal dispatch team so we can respond fast</td></tr>
+    <tr><td data-label="Service">n8n (automation)</td><td data-label="What it receives">Passes the above summary through to Telegram</td><td data-label="Why">Internal plumbing only — nothing is sold, shared publicly, or used for advertising</td></tr>
   </table>
 
   <h2>4. How long we keep it</h2>
@@ -148,5 +159,19 @@ footer a{color:var(--muted)}
     <a href="index.html">&larr; Back to Ngwanu Express</a>
   </div>
 </footer>
+<script>
+(function(){
+  var els = document.querySelectorAll(".card,.contact-box");
+  els.forEach(function(el){ el.classList.add("reveal"); });
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){ if(entry.isIntersecting){ entry.target.classList.add("in"); obs.unobserve(entry.target); } });
+    }, { threshold: .15 });
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add("in"); });
+  }
+})();
+</script>
 </body>
 </html>
