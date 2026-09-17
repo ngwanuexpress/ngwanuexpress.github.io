@@ -58,6 +58,14 @@ a{color:inherit}
 .msg h2{color:var(--ink);margin-bottom:8px}
 [hidden]{display:none!important}
 
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:cardIn .5s ease both}
+.btn:active{transform:scale(.96)}
+.steps li .dot{transition:background .3s ease,border-color .3s ease,box-shadow .3s ease}
+.steps li.current .dot{animation:pulseDot 1.8s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 4px rgba(224,128,32,.18)}50%{box-shadow:0 0 0 9px rgba(224,128,32,.08)}}
+@media (prefers-reduced-motion:reduce){.card{animation:none}.steps li.current .dot{animation:none}}
+
 @media (prefers-color-scheme: dark){
   :root{
     --green:#2E8B57; --green-deep:#132A1F; --green-hover:#3AA06A;
