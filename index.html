@@ -401,7 +401,12 @@ const OSRM = "https://router.project-osrm.org/route/v1/driving/";
 const LAGOS_BBOX = "2.70,6.35,4.35,6.78";
 const LAGOS_CENTRE = { lat: 6.5244, lon: 3.3792 };
 const GEO = {
-  search: function(q){ return "https://photon.komoot.io/api/?q=" + encodeURIComponent(q) + "&lang=en&limit=6&lat=" + LAGOS_CENTRE.lat + "&lon=" + LAGOS_CENTRE.lon + "&bbox=" + LAGOS_BBOX; },
+  search: function(q, opts){
+    opts = opts || {};
+    var url = "https://photon.komoot.io/api/?q=" + encodeURIComponent(q) + "&lang=en&limit=" + (opts.limit || 8) + "&lat=" + LAGOS_CENTRE.lat + "&lon=" + LAGOS_CENTRE.lon;
+    if(!opts.noBbox) url += "&bbox=" + LAGOS_BBOX;
+    return url;
+  },
   reverse: function(lat, lon){ return "https://photon.komoot.io/reverse/?lat=" + lat + "&lon=" + lon + "&lang=en"; }
 };
 const naira = n => "₦" + Math.round(n).toLocaleString("en-NG");
@@ -441,7 +446,14 @@ function formatAddr(pr){
   if(rest.length) line += (line ? ", " : "") + rest.slice(0, 3).join(", ");
   return line || pr.name || "Selected location";
 }
-function geoSearch(q){ return fetch(GEO.search(q)).then(function(r){ return r.json(); }).then(function(d){ return (d.features || []).slice(0, 6); }); }
+function geoSearch(q){
+  var biased = /lagos|nigeria/i.test(q) ? q : q + ", Lagos";
+  return fetch(GEO.search(biased)).then(function(r){ return r.json(); }).then(function(d){
+    var feats = d.features || [];
+    if(feats.length) return feats.slice(0, 8);
+    return fetch(GEO.search(q, { noBbox: true })).then(function(r2){ return r2.json(); }).then(function(d2){ return (d2.features || []).slice(0, 8); });
+  });
+}
 function geoReverse(lat, lon){ return fetch(GEO.reverse(lat, lon)).then(function(r){ return r.json(); }).then(function(d){ var f = (d.features || [])[0]; return f ? formatAddr(f.properties) : null; }); }
 function attachAutocomplete(target){
   const input = document.getElementById(target);
@@ -450,7 +462,7 @@ function attachAutocomplete(target){
   let feats = []; let active = -1;
   function close(){ list.hidden = true; list.innerHTML = ""; feats = []; active = -1; input.setAttribute("aria-expanded","false"); }
   function paint(){
-    if(!feats.length){ list.innerHTML = '<li class="ac-note">No matches yet — keep typing, or use “Use my current location”.</li>'; }
+    if(!feats.length){ list.innerHTML = '<li class="ac-note">No suggestions for that one — our map doesn\'t have every street. You can keep typing the full address, use “Use my current location”, and your rider will confirm the exact spot by phone.</li>'; }
     else { list.innerHTML = feats.map(function(f, i){ return '<li role="option" data-i="' + i + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>' + esc(formatAddr(f.properties)) + '</span></li>'; }).join(""); }
     list.hidden = false; input.setAttribute("aria-expanded","true");
   }
