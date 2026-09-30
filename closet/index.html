@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>NGWANU Closet — Plan what to wear</title>
+<meta name="description" content="Snap your clothes, plan outfits on a calendar, and get outfit ideas from an AI stylist." />
+<meta name="theme-color" content="#01442E" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png" />
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --green:#01442E; --green-deep:#0C3325; --green-soft:rgba(1,68,46,.08);
+  --orange:#E08020; --orange-hover:#C56E17;
+  --ink:#181818; --muted:#5c5c5c; --line:rgba(0,0,0,.12);
+  --paper:#faf8f3; --surface:#fff; --error:#b00020;
+  --radius:16px; --shadow:0 18px 40px -22px rgba(12,51,37,.35);
+  --nav-h:64px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --green:#2E8B57; --green-deep:#132A1F; --green-soft:rgba(46,139,87,.16);
+    --orange:#F0954A; --orange-hover:#FFB067;
+    --ink:#F2F0E8; --muted:#B9C4BD; --line:rgba(255,255,255,.14);
+    --paper:#10201A; --surface:#182A22; --error:#FF6B6B;
+    --shadow:0 18px 40px -22px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --green:#2E8B57; --green-deep:#132A1F; --green-soft:rgba(46,139,87,.16);
+  --orange:#F0954A; --orange-hover:#FFB067;
+  --ink:#F2F0E8; --muted:#B9C4BD; --line:rgba(255,255,255,.14);
+  --paper:#10201A; --surface:#182A22; --error:#FF6B6B;
+  --shadow:0 18px 40px -22px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px)}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.15}
+button,input,select,textarea{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand img{width:32px;height:32px;border-radius:8px}
+.brand b{font-family:Fraunces,serif;font-size:1.2rem}
+.brand small{color:var(--muted);font-weight:500}
+.count{color:var(--muted);font-size:.9rem}
+
+main section{display:none;padding-top:18px}
+main section.active{display:block}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.head h2{font-size:1.5rem}
+.muted{color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:0 -16px 14px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:.9rem;font-weight:500;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.tile{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--surface);border:1px solid var(--line);cursor:pointer;padding:0}
+.tile img{width:100%;height:100%;object-fit:cover}
+.tile .lbl{position:absolute;left:6px;bottom:6px;right:6px;font-size:.72rem;font-weight:600;background:rgba(0,0,0,.55);color:#fff;border-radius:6px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.tile.pick[aria-pressed="true"]{outline:3px solid var(--orange);outline-offset:-3px}
+.tile.pick[aria-pressed="true"]::after{content:"✓";position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.85rem}
+
+.empty{text-align:center;padding:40px 16px;border:2px dashed var(--line);border-radius:var(--radius);color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:4px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--green);background:var(--green);color:#fff;border-radius:999px;padding:11px 20px;font-weight:600;cursor:pointer;text-decoration:none;min-height:44px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn--accent{background:var(--orange);border-color:var(--orange)}
+.btn--accent:hover:not(:disabled){background:var(--orange-hover);border-color:var(--orange-hover)}
+.btn--ghost{background:transparent;color:var(--green)}
+.btn--danger{background:transparent;border-color:var(--error);color:var(--error)}
+.btn--sm{padding:6px 14px;min-height:36px;font-size:.9rem}
+.btn--block{width:100%}
+.fab{position:fixed;right:max(16px,calc(50% - 344px));bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);width:56px;height:56px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);font-size:1.8rem;box-shadow:var(--shadow);cursor:pointer;z-index:4;display:none}
+.fab.show{display:block}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.card h3{font-size:1.1rem;margin-bottom:4px}
+.strip{display:flex;gap:8px;overflow-x:auto;margin:10px 0}
+.strip img{width:72px;height:96px;object-fit:cover;border-radius:10px;flex:none;border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{display:inline-block;background:var(--green-soft);color:var(--green);border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}
+
+label.f{display:block;font-weight:600;font-size:.9rem;margin:14px 0 6px}
+input[type=text],input[type=date],select,textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 12px;min-height:44px}
+textarea{min-height:70px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+
+.photo-drop{display:grid;place-items:center;aspect-ratio:3/4;max-height:300px;margin:0 auto;border:2px dashed var(--line);border-radius:var(--radius);overflow:hidden;cursor:pointer;background:var(--paper);color:var(--muted);text-align:center}
+.photo-drop img{width:100%;height:100%;object-fit:cover}
+
+dialog{border:0;padding:0;border-radius:20px 20px 0 0;width:100%;max-width:720px;max-height:92vh;margin:auto auto 0;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+@media (min-width:760px){dialog{border-radius:20px;margin:auto}}
+.sheet{padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sheet-head h2{font-size:1.3rem}
+.x{border:0;background:transparent;font-size:1.6rem;cursor:pointer;width:44px;height:44px;margin:-10px -10px -10px 0;color:var(--muted)}
+.sheet-foot{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.sheet-foot .btn{flex:1}
+
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-head button{border:1px solid var(--line);background:var(--surface);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.1rem}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .dow{text-align:center;font-size:.75rem;color:var(--muted);font-weight:600}
+.day{aspect-ratio:1/1.25;border:1px solid var(--line);background:var(--surface);border-radius:10px;cursor:pointer;padding:3px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.8rem;overflow:hidden;min-width:0}
+.day.today{border-color:var(--orange);border-width:2px}
+.day.blank{visibility:hidden}
+.day img{width:100%;flex:1;min-height:0;object-fit:cover;border-radius:6px}
+
+.weather{display:flex;align-items:center;gap:10px;background:var(--green-soft);border-radius:12px;padding:10px 12px;font-size:.92rem;margin-top:12px}
+.weather button{margin-left:auto;white-space:nowrap;flex:none}
+.notice{background:var(--green-soft);border-radius:12px;padding:12px;margin:12px 0;font-size:.92rem}
+.error{color:var(--error);font-weight:500;margin-top:10px}
+.spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.bottom .wrap{display:grid;grid-template-columns:repeat(4,1fr);height:var(--nav-h)}
+nav.bottom button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer}
+nav.bottom button svg{width:22px;height:22px}
+nav.bottom button[aria-current="page"]{color:var(--green)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{outline:3px solid var(--orange);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion: reduce){.spinner{animation:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="../icons/icon-192.png" alt="" /><b>Closet</b><small>by NGWANU</small></a>
+    <span class="count" id="count"></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- CLOSET -->
+  <section id="v-closet" class="active" aria-labelledby="h-closet">
+    <div class="head"><h2 id="h-closet">My closet</h2><button class="btn btn--sm" data-action="add-item">+ Add item</button></div>
+    <div class="chips" id="cat-filter" role="group" aria-label="Filter by category"></div>
+    <div id="closet-grid" class="grid"></div>
+  </section>
+
+  <!-- STYLE ME -->
+  <section id="v-style" aria-labelledby="h-style">
+    <div class="head"><h2 id="h-style">Style me</h2></div>
+    <p class="muted" style="margin-top:-6px">Pick where you're going and the AI stylist will put outfits together from your own closet.</p>
+    <label class="f">Occasion</label>
+    <div class="chips" id="occ-chips" role="group" aria-label="Occasion"></div>
+    <div class="row" style="gap:12px">
+      <div style="flex:1;min-width:150px"><label class="f" for="style-date">Date</label><input type="date" id="style-date" /></div>
+    </div>
+    <div class="weather" id="weather" aria-live="polite"><span>Checking Lagos weather…</span></div>
+    <label class="f" for="style-note">Anything else? <span class="muted">(optional)</span></label>
+    <textarea id="style-note" maxlength="300" placeholder="e.g. I'll be on a bike, I want to wear my new gele, no heels…"></textarea>
+    <div style="margin-top:16px"><button class="btn btn--accent btn--block" id="suggest-btn">✨ Suggest outfits</button></div>
+    <p class="error" id="style-error" role="alert" hidden></p>
+    <div id="suggestions" style="margin-top:18px"></div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section id="v-calendar" aria-labelledby="h-cal">
+    <div class="head"><h2 id="h-cal">Outfit calendar</h2></div>
+    <div class="cal-head"><button id="cal-prev" aria-label="Previous month">‹</button><b id="cal-title"></b><button id="cal-next" aria-label="Next month">›</button></div>
+    <div class="cal" id="cal"></div>
+    <p class="muted" style="font-size:.9rem;margin-top:12px">Tap a day to plan what you'll wear.</p>
+  </section>
+
+  <!-- OUTFITS -->
+  <section id="v-outfits" aria-labelledby="h-outfits">
+    <div class="head"><h2 id="h-outfits">Saved outfits</h2><button class="btn btn--sm" data-action="new-outfit">+ New outfit</button></div>
+    <div id="outfit-list"></div>
+  </section>
+</main>
+
+<button class="fab" id="fab" aria-label="Add clothing item">+</button>
+
+<nav class="bottom" aria-label="Main">
+  <div class="wrap">
+    <button data-view="closet" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 1 1 2 2c-.8.4-2 1-2 2M12 8 3 15a1.5 1.5 0 0 0 1 3h16a1.5 1.5 0 0 0 1-3z"/></svg>Closet</button>
+    <button data-view="style"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Style me</button>
+    <button data-view="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Calendar</button>
+    <button data-view="outfits"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 6l2 4 2-1v12h8V9l2 1 2-4-4-3c-.5 1.5-2 2.5-4 2.5S8.5 4.5 8 3z"/></svg>Outfits</button>
+  </div>
+</nav>
+
+<!-- Add item sheet -->
+<dialog id="d-add" aria-labelledby="h-add">
+  <form class="sheet" id="add-form" method="dialog">
+    <div class="sheet-head"><h2 id="h-add">Add clothing item</h2><button type="button" class="x" data-close aria-label="Close">×</button></div>
+    <label class="photo-drop" id="photo-drop" for="photo-input"><span>📷<br />Tap to take or choose a photo</span></label>
+    <input id="photo-input" class="sr" type="file" accept="image/*" />
+    <label class="f" for="item-name">Name <span class="muted">(optional)</span></label>
+    <input type="text" id="item-name" maxlength="60" placeholder="e.g. Blue Ankara shirt" />
+    <label class="f" for="item-cat">Category</label>
+    <select id="item-cat"></select>
+    <label class="f">Main colour</label>
+    <div class="swatches" id="item-colors" role="group" aria-label="Main colour"></div>
+    <label class="f">Good for</label>
+    <div class="chips" id="item-tags" role="group" aria-label="Good for" style="flex-wrap:wrap;margin:0"></div>
+    <p class="error" id="add-error" role="alert" hidden></p>
+    <div class="sheet-foot"><button type="submit" class="btn" id="save-item">Save item</button></div>
+  </form>
+</dialog>
+
+<!-- Item detail sheet -->
+<dialog id="d-item" aria-labelledby="h-item"><div class="sheet" id="item-body"></div></dialog>
+
+<!-- Outfit builder sheet -->
+<dialog id="d-outfit" aria-labelledby="h-outfit">
+  <form class="sheet" id="outfit-form" method="dialog">
+    <div class="sheet-head"><h2 id="h-outfit">New outfit</h2><button type="button" class="x" data-close aria-label="Close">×</button></div>
+    <label class="f" for="outfit-title">Name</label>
+    <input type="text" id="outfit-title" maxlength="60" placeholder="e.g. Friday office look" />
+    <label class="f">Pick the items</label>
+    <div class="grid" id="outfit-picker"></div>
+    <p class="error" id="outfit-error" role="alert" hidden></p>
+    <div class="sheet-foot"><button type="submit" class="btn">Save outfit</button></div>
+  </form>
+</dialog>
+
+<!-- Day planner sheet -->
+<dialog id="d-day" aria-labelledby="h-day"><div class="sheet" id="day-body"></div></dialog>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
