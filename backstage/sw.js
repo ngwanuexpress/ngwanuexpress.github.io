@@ -1,5 +1,5 @@
-const CACHE = "backstage-v1";
-const SHELL = ["./", "app.js", "config.js", "manifest.json"];
+const CACHE = "backstage-v2";
+const SHELL = ["./", "app.js", "config.js", "manifest.json", "icons/logo.svg"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)));
