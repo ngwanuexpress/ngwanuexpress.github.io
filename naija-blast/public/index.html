@@ -295,6 +295,7 @@
 
   #praise{position:fixed;left:0;right:0;top:40%;z-index:7;pointer-events:none;text-align:center;font-family:var(--f-head);font-size:clamp(2.2rem,7vw,4.4rem);line-height:1;color:#FFD23F;
     -webkit-text-stroke:8px #4A2A0E;paint-order:stroke fill;opacity:0;transform:scale(.4)}
+  #praise{will-change:transform,opacity}
   #praise.go{animation:praise 1.1s cubic-bezier(.2,.9,.3,1.3) forwards}
   #praise.hot{color:#FF7A3D}
   @keyframes praise{0%{opacity:0;transform:scale(.4) rotate(-6deg)}18%{opacity:1;transform:scale(1.12) rotate(2deg)}30%{transform:scale(1) rotate(0)}75%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05) translateY(-30px)}}
@@ -830,6 +831,8 @@ save.unlocked = save.unlocked || 0; save.stars = save.stars || {}; save.bests = 
 save.upg = save.upg || {}; save.naira = save.naira || 0;
 save.diff = save.diff ?? 1; save.sfxOn = save.sfxOn ?? true; save.musicOn = save.musicOn ?? true;
 save.gfx = save.gfx || (matchMedia('(pointer: coarse)').matches ? 'low' : 'high');
+// one-time reset: phones that saved High before the performance pass start on Low (they can switch back in Pause)
+if (!save.gfx2) { save.gfx2 = 1; if (matchMedia('(pointer: coarse)').matches) save.gfx = 'low'; }
 function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
 if (!save.ver || save.ver < 5) { save.unlocked = 0; save.stars = {}; }
 save.ver = 6;
@@ -1134,6 +1137,7 @@ function loadRun(c, opts = {}) {
   }
   build3DLevel();
   layout();
+  warmShaders();
   updateHUD();
 }
 
@@ -2110,7 +2114,11 @@ function init3D() {
     const mat = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.2, metalness: 0.0, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 0.35,
       emissive: new THREE.Color(0xffffff), emissiveIntensity: c === WILD ? 0.3 : 0.26, emissiveMap: tex });
     mat.toneMapped = true;
+    // Low graphics: Phong with a tight highlight still reads as glossy glass, at a fraction of the clear-coat cost
+    const lo = new THREE.MeshPhongMaterial({ map: tex, shininess: 110, specular: new THREE.Color(0x777777),
+      emissive: new THREE.Color(0xffffff), emissiveIntensity: c === WILD ? 0.34 : 0.3, emissiveMap: tex });
     const m = new THREE.InstancedMesh(sphere, mat, 600);
+    m.userData.hi = mat; m.userData.lo = lo;
     m.castShadow = true; m.frustumCulled = false; m.count = 0;
     scene.add(m); G.orbs.push(m);
   }
@@ -2200,6 +2208,8 @@ function applyGfx() {
   renderer.shadowMap.enabled = hi; G.sun.castShadow = hi;
   if (G.eyeLight) G.eyeLight.visible = hi;
   (G.holes || []).forEach(h => { h.pl.visible = hi; });
+  qualityMats(levelGroup); qualityMats(G.board); qualityMats(G.shooter);
+  G.orbs.forEach(o => { o.material = hi ? o.userData.hi : o.userData.lo; });
   prCap = Math.min(window.devicePixelRatio || 1, hi ? 2 : 1.5);
   prNow = Math.min(prCap, hi ? 1.5 : 1.25); prCalm = 0;
   renderer.setPixelRatio(prNow);
@@ -2280,7 +2290,7 @@ function buildBoss(type) {
 
 // ---------- per-level geometry ----------
 function disposeGroup(gr) {
-  gr.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { if (m.userData.shared) return; if (m.userData.ownMap && m.map) m.map.dispose(); m.dispose(); }); });
+  gr.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { if (m.userData.shared) return; if (m.userData.ownMap && m.map) m.map.dispose(); m.dispose(); if (m.userData.hi) m.userData.hi.dispose(); if (m.userData.lo) m.userData.lo.dispose(); }); });
   scene.remove(gr);
 }
 function ribbon(pts, nrm, width, y, uScale, from = 0, to = pts.length) {
@@ -2443,10 +2453,10 @@ function build3DLevel() {
       const off = D / 2 + 13;
       const v = pts.map((p, i) => new THREE.Vector3(wx(p[0] + nrm[i][0] * sd * off), 8, wz(p[1] + nrm[i][1] * sd * off)));
       const curve = new THREE.CatmullRomCurve3(v);
-      const wall = new THREE.Mesh(new THREE.TubeGeometry(curve, n, 10, 8, false), wallMat);
+      const wall = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.ceil(n * 0.6), 10, 6, false), wallMat);
       wall.castShadow = true; wall.receiveShadow = true; levelGroup.add(wall);
       const v2 = v.map(q => new THREE.Vector3(q.x, 16, q.z));
-      levelGroup.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(v2), n, 3.5, 6, false), wallTop));
+      levelGroup.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(v2), Math.ceil(n * 0.6), 3.5, 5, false), wallTop));
     }
     const ex = t.px[t.N - 1], ey = t.py[t.N - 1], hole = new THREE.Group();
     hole.position.set(wx(ex), 0, wz(ey));
@@ -2465,9 +2475,40 @@ function build3DLevel() {
   G.bossObj = null;
   if (boss) { G.bossObj = buildBoss(boss.type); G.bossObj.position.set(wx(boss.x), 0, wz(boss.y)); levelGroup.add(G.bossObj); }
   G.shooter.position.set(wx(shooter.x), 0, wz(shooter.y));
+  qualityMats(levelGroup);
 }
-
-// ---------- camera fit ----------
+// Low graphics: large matte surfaces (sand, track, walls, scenery) use cheap per-vertex lighting.
+// Physically based shading on full-screen surfaces was the main cost on phones (~10x in tests);
+// metals get a cheap Phong highlight; the marbles stay on the full material.
+// Compile every effect's shader up front; otherwise the first pop/combo of a level stalls while it compiles.
+function warmShaders() {
+  if (!renderer || G.warmed === save.gfx + levelGroup.uuid) return;
+  const pools = [G.parts, G.beam, G.land, G.arrow, G.rings[0], G.halos[0], G.iconSpr[0], G.glows[0], G.coins[0], ...G.orbs];
+  const was = pools.map(o => o.visible);
+  pools.forEach(o => { o.visible = true; });
+  try { renderer.compile(scene, camera); } catch (err) {}
+  pools.forEach((o, i) => { o.visible = was[i]; });
+  G.warmed = save.gfx + levelGroup.uuid;
+}
+function qualityMats(root) {
+  if (!root) return;
+  const low = save.gfx !== 'high';
+  const pick = m => {
+    if (low && m.isMeshStandardMaterial && !m.userData.keepPbr) {
+      if (!m.userData.lo) {
+        const base = { map: m.map, emissiveMap: m.emissiveMap, emissiveIntensity: m.emissiveIntensity, transparent: m.transparent, opacity: m.opacity, alphaTest: m.alphaTest, side: m.side };
+        // metals keep a cheap highlight so gold still gleams
+        const lo = m.metalness >= 0.5 ? new THREE.MeshPhongMaterial({ ...base, shininess: 70, specular: new THREE.Color(0xfff0c0), flatShading: m.flatShading }) : new THREE.MeshLambertMaterial(base);
+        lo.color = m.color; lo.emissive = m.emissive; // shared, so theme colour changes still apply
+        lo.userData = { hi: m, shared: m.userData.shared }; m.userData.lo = lo;
+      }
+      return m.userData.lo;
+    }
+    if (!low && m.userData.hi) return m.userData.hi;
+    return m;
+  };
+  root.traverse(o => { if (o.isMesh && !o.isInstancedMesh && o.material) o.material = Array.isArray(o.material) ? o.material.map(pick) : pick(o.material); });
+}
 function layout() {
   vw = innerWidth; vh = innerHeight;
   if (!renderer) return;
@@ -2646,7 +2687,7 @@ function render3D(dt) {
   chains.forEach((ch, i) => {
     const head = ch.balls.length ? ch.balls[ch.balls.length - 1].pos / ch.t.L : 0;
     const danger = dl * clamp01((head - 0.6) / 0.4), pulse = 0.5 + 0.5 * Math.sin(time * (4 + danger * 10));
-    if (G.dangerMats[i]) G.dangerMats[i].opacity = danger * (0.25 + 0.5 * pulse);
+    if (G.dangerMats[i]) { const dm = G.dangerMats[i]; dm.opacity = danger * (0.25 + 0.5 * pulse); dm.visible = dm.opacity > 0.01; } // skip the overlay entirely when calm
     const h = G.holes[i]; if (h) { h.sw.rotation.z -= dt * (2 + danger * 5); h.teeth.rotation.y += dt * 0.6; h.pl.intensity = 0.6 + danger * 2.5 * pulse; }
     if (G.gates[i]) G.gates[i].rotation.z += dt;
   });
