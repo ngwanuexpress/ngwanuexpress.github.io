@@ -647,12 +647,12 @@
 const TAU = Math.PI * 2;
 const R = 26, D = R * 2, STEP = 2;
 const COLORS = [
-  { main: '#2DBE4E', glow: '#A8F7B4', dark: '#0B5A22' },
-  { main: '#E8322B', glow: '#FF9C8C', dark: '#7A0E08' },
-  { main: '#2D7FF0', glow: '#A6CCFF', dark: '#0B3480' },
-  { main: '#FFC61A', glow: '#FFF3A6', dark: '#8A5A00' },
-  { main: '#9A48E6', glow: '#DDB0FF', dark: '#3E0F75' },
-  { main: '#FF4FA0', glow: '#FFB8DA', dark: '#8A0B4A' },
+  { main: '#12C23A', glow: '#8CFFA4', dark: '#04601A' },
+  { main: '#F0141E', glow: '#FF8A7E', dark: '#6E0207' },
+  { main: '#1560FF', glow: '#8FBDFF', dark: '#041F7A' },
+  { main: '#FFCC00', glow: '#FFF59A', dark: '#A05E00' },
+  { main: '#8A25F2', glow: '#D6A2FF', dark: '#34056F' },
+  { main: '#FF2A96', glow: '#FFAAD6', dark: '#7E0046' },
 ];
 const WILD = 6, NCOL = 7;
 const GLYPHS = ['ring', 'tri', 'square', 'diamond', 'star', 'plus', 'star'];
@@ -1607,7 +1607,7 @@ function raycast() {
     for (const ch of chains) for (const b of ch.balls) {
       if (b.pos < 0) continue;
       const dx = x - b.x, dy = y - b.y;
-      if (dx * dx + dy * dy < lim) return { x, y, hit: true };
+      if (dx * dx + dy * dy < lim) return { x, y, hit: true, ball: b };
     }
   }
   return { x, y, hit: false };
@@ -2050,7 +2050,19 @@ function init3D() {
     g.strokeStyle = '#f2b33d'; g.lineWidth = 3; for (const r of [90, 70]) { g.beginPath(); g.arc(0, 0, r, 0, TAU); g.stroke(); }
     for (let i = 0; i < 12; i++) { const a = i * TAU / 12; g.beginPath(); g.arc(Math.cos(a) * 80, Math.sin(a) * 80, 4, 0, TAU); g.fillStyle = '#ffd98a'; g.fill(); }
   });
-  G.dash = canvasTex(64, 8, (g, w, h) => { g.fillStyle = '#fff'; g.fillRect(0, 1, w * 0.4, h - 2); }, true);
+  G.dash = canvasTex(128, 64, (g, w, h) => {
+    g.clearRect(0, 0, w, h); g.beginPath(); g.arc(h / 2, h / 2, h * 0.36, 0, TAU);
+    g.fillStyle = '#ffffff'; g.fill(); g.lineWidth = h * 0.12; g.strokeStyle = '#3A2210'; g.stroke();
+  }, true);
+  G.targetTex = canvasTex(128, 128, (g, w, h) => {
+    g.clearRect(0, 0, w, h); g.lineWidth = 16; g.strokeStyle = '#3A2210'; g.beginPath(); g.arc(w / 2, h / 2, w * 0.4, 0, TAU); g.stroke();
+    g.lineWidth = 9; g.strokeStyle = '#ffffff'; g.beginPath(); g.arc(w / 2, h / 2, w * 0.4, 0, TAU); g.stroke();
+  });
+  G.arrowTex = canvasTex(128, 128, (g, w, h) => {
+    g.clearRect(0, 0, w, h); g.beginPath(); g.moveTo(w * 0.5, h * 0.92); g.lineTo(w * 0.12, h * 0.42); g.lineTo(w * 0.32, h * 0.42); g.lineTo(w * 0.32, h * 0.08); g.lineTo(w * 0.68, h * 0.08); g.lineTo(w * 0.68, h * 0.42); g.lineTo(w * 0.88, h * 0.42); g.closePath();
+    g.lineJoin = 'round'; g.lineWidth = 12; g.strokeStyle = '#3A2210'; g.stroke(); g.fillStyle = '#ffffff'; g.fill();
+    g.beginPath(); g.moveTo(w * 0.4, h * 0.16); g.lineTo(w * 0.4, h * 0.46); g.lineWidth = 7; g.strokeStyle = 'rgba(255,255,255,0.9)'; g.stroke();
+  });
   G.leafTex = canvasTex(256, 64, (g, w, h) => {
     g.clearRect(0, 0, w, h);
     const gr = g.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, '#2f7d24'); gr.addColorStop(1, '#8bd24a');
@@ -2081,27 +2093,22 @@ function init3D() {
     const tex = canvasTex(512, 256, (g, w, h) => {
       const col = COLORS[c] || COLORS[0];
       if (c === WILD) { const gr = g.createLinearGradient(0, 0, w, 0); COLORS.forEach((cc, j) => gr.addColorStop(j / 6, cc.main)); gr.addColorStop(1, COLORS[0].main); g.fillStyle = gr; }
-      else { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, col.glow); gr.addColorStop(0.35, col.main); gr.addColorStop(0.75, col.main); gr.addColorStop(1, col.dark); g.fillStyle = gr; }
+      else { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, col.glow); gr.addColorStop(0.22, col.main); gr.addColorStop(0.8, col.main); gr.addColorStop(1, col.dark); g.fillStyle = gr; }
       g.fillRect(0, 0, w, h);
-      // ankara zigzag bands
-      for (const by of [h * 0.3, h * 0.7]) {
-        g.fillStyle = c === WILD ? 'rgba(255,255,255,0.55)' : col.dark; g.globalAlpha = 0.55;
-        g.beginPath(); for (let x = 0; x <= w; x += 16) { g.lineTo(x, by - 7); g.lineTo(x + 8, by + 7); } g.lineTo(w, by + 10); g.lineTo(0, by + 10); g.closePath(); g.fill();
-        g.globalAlpha = 0.8; g.fillStyle = '#ffffff';
-        for (let x = 8; x < w; x += 32) { g.beginPath(); g.arc(x, by - 13, 2.6, 0, TAU); g.fill(); }
-        g.globalAlpha = 1;
-      }
-      // engraved spirals
+      // fine gold-trimmed equator band
+      g.fillStyle = c === WILD ? 'rgba(255,255,255,0.7)' : col.dark; g.globalAlpha = 0.5; g.fillRect(0, h / 2 - 9, w, 18);
+      g.globalAlpha = 0.9; g.fillStyle = '#FFE9A0'; g.fillRect(0, h / 2 - 11, w, 2.5); g.fillRect(0, h / 2 + 8.5, w, 2.5);
+      g.globalAlpha = 1;
+      // a small white symbol on each side, so colours can also be told apart by shape
       for (const cx of [w * 0.25, w * 0.75]) {
-        g.save(); g.translate(cx, h / 2); g.scale(1, 1.35);
-        g.strokeStyle = 'rgba(255,255,255,0.55)'; g.lineWidth = 4; g.lineCap = 'round';
-        g.beginPath(); for (let t = 0; t < 1; t += 0.02) { const a = t * 11, r = 4 + t * 34; t === 0 ? g.moveTo(Math.cos(a) * r, Math.sin(a) * r) : g.lineTo(Math.cos(a) * r, Math.sin(a) * r); } g.stroke();
-        glyphPath(g, GLYPHS[c], 11); g.fillStyle = c === WILD ? '#ffffff' : col.dark; g.globalAlpha = 0.85; g.fill('evenodd');
+        g.save(); g.translate(cx, h * 0.3); g.scale(1, 1.4);
+        glyphPath(g, GLYPHS[c], 13); g.fillStyle = 'rgba(255,255,255,0.92)'; g.fill('evenodd');
+        g.lineWidth = 2.5; g.strokeStyle = c === WILD ? 'rgba(0,0,0,0.35)' : col.dark; g.stroke();
         g.restore();
       }
     });
-    const mat = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.25, metalness: 0.0, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 0.55,
-      emissive: col3(c === WILD ? '#ffffff' : COLORS[c].main), emissiveIntensity: c === WILD ? 0.15 : 0.02, emissiveMap: tex });
+    const mat = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.2, metalness: 0.0, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 0.35,
+      emissive: new THREE.Color(0xffffff), emissiveIntensity: c === WILD ? 0.3 : 0.26, emissiveMap: tex });
     mat.toneMapped = true;
     const m = new THREE.InstancedMesh(sphere, mat, 600);
     m.castShadow = true; m.frustumCulled = false; m.count = 0;
@@ -2131,10 +2138,13 @@ function init3D() {
 
   // aim beam + landing ring
   const beamGeo = new THREE.PlaneGeometry(1, 1); beamGeo.translate(0.5, 0, 0);
-  G.beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ map: G.dash, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
-  G.beam.rotation.x = -Math.PI / 2; scene.add(G.beam);
-  G.land = new THREE.Mesh(new THREE.RingGeometry(0.7, 1, 40), new THREE.MeshBasicMaterial({ transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
-  G.land.rotation.x = -Math.PI / 2; scene.add(G.land);
+  // normal blending (not additive) so the pointer reads clearly on the bright sand
+  G.beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ map: G.dash, transparent: true, depthWrite: false, toneMapped: false }));
+  G.beam.rotation.x = -Math.PI / 2; G.beam.renderOrder = 5; scene.add(G.beam);
+  G.land = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: G.targetTex, transparent: true, depthWrite: false, toneMapped: false }));
+  G.land.rotation.x = -Math.PI / 2; G.land.renderOrder = 6; scene.add(G.land);
+  G.arrow = new THREE.Sprite(new THREE.SpriteMaterial({ map: G.arrowTex, transparent: true, depthTest: false, depthWrite: false, toneMapped: false }));
+  G.arrow.renderOrder = 9; G.arrow.visible = false; scene.add(G.arrow);
 
   buildShooter();
 
@@ -2562,7 +2572,7 @@ function render3D(dt) {
     }
   }
   for (const p of pops) putOrb(p.c, p.x, p.y, R + p.t * 24, 0, 0, Math.max(0.01, 1 + p.t * 0.6 - p.t * p.t * 1.5));
-  for (const bu of bullets) { putOrb(bu.c, bu.x, bu.y, R, Math.atan2(bu.vy, bu.vx), time * 20); putGlow(bu.x, bu.y, R, bu.c === WILD ? '#ffd98a' : COLORS[bu.c].main, 70, 0.6); }
+  for (const bu of bullets) { putOrb(bu.c, bu.x, bu.y, R, Math.atan2(bu.vy, bu.vx), time * 20); putGlow(bu.x, bu.y, R, bu.c === WILD ? '#FFD04A' : COLORS[bu.c].main, 70, 0.6); }
   for (const s of spits) { putOrb(s.c, s.x, s.y, s.h, 0, time * 10); putGlow(s.x, s.y, s.h, '#ff4f5e', 90, 0.9); }
   if (sweep && state === 'bonus') { const p = ptAt(sweep.t, sweep.pos); putGlow(p.x, p.y, R + 10, '#FFD23F', 140, 1); putGlow(p.x, p.y, R + 10, '#ffffff', 60, 1); }
   for (const b of bolts) putGlow(b.x, b.y, b.h, b.strong ? '#ffd98a' : '#ff9a5a', b.strong ? 90 : 60, 1);
@@ -2571,9 +2581,9 @@ function render3D(dt) {
   if (nxt !== G.lastNxt) {
     G.lastNxt = nxt;
     const sw = $('swap-next');
-    if (sw) sw.style.background = nxt === WILD ? 'conic-gradient(#E8322B,#FFC61A,#2DBE4E,#2D7FF0,#9A48E6,#FF4FA0,#E8322B)' : `radial-gradient(circle at 35% 30%, ${COLORS[nxt].glow}, ${COLORS[nxt].main} 55%, ${COLORS[nxt].dark})`;
+    if (sw) sw.style.background = nxt === WILD ? 'conic-gradient(#F0141E,#FFCC00,#12C23A,#1560FF,#8A25F2,#FF2A96,#F0141E)' : `radial-gradient(circle at 35% 30%, ${COLORS[nxt].glow}, ${COLORS[nxt].main} 55%, ${COLORS[nxt].dark})`;
   }
-  G.shooter.visible = inPlay; G.beam.visible = false; G.land.visible = false;
+  G.shooter.visible = inPlay; G.beam.visible = false; G.land.visible = false; G.arrow.visible = false;
   if (inPlay) {
     G.head.rotation.y = -aimAngle;
     G.table.rotation.y += dt * 0.3;
@@ -2583,13 +2593,26 @@ function render3D(dt) {
     putOrb(cur, shooter.x + c * mx, shooter.y + sn * mx, 28, aimAngle, time * 2);
     putOrb(nxt, shooter.x - c * 11 * s, shooter.y - sn * 11 * s, 42, 0, 0, 0.55);
     if (state === 'play' || homeOn) {
-      const hit = raycast(), colr = cur === WILD ? '#ffd98a' : COLORS[cur].main;
-      const sx = shooter.x + c * 46, sy = shooter.y + sn * 46, len = Math.max(1, Math.hypot(hit.x - sx, hit.y - sy));
-      G.beam.visible = true; G.beam.position.set(wx(sx), R, wz(sy)); G.beam.rotation.z = -aimAngle;
-      G.beam.scale.set(len, aimT > 0 ? 6 : 3, 1);
-      G.beam.material.color.copy(col3(colr)).multiplyScalar(aimT > 0 ? 2.2 : aiming ? 1.1 : 0.7);
-      G.beam.material.map.repeat.set(aimT > 0 ? 0.001 : len / 28, 1); G.beam.material.map.offset.x -= dt * 2;
-      if (hit.hit) { G.land.visible = true; G.land.position.set(wx(hit.x), 6, wz(hit.y)); G.land.scale.setScalar(R * 0.95 + Math.sin(time * 8) * 2); G.land.material.color.copy(col3(colr)).multiplyScalar(1.6); }
+      const hit = raycast(), colr = cur === WILD ? '#FFD04A' : COLORS[cur].main;
+      const sx = shooter.x + c * 50, sy = shooter.y + sn * 50;
+      const ex = hit.ball ? hit.ball.x : hit.x, ey = hit.ball ? hit.ball.y : hit.y;
+      const len = Math.max(1, Math.hypot(ex - sx, ey - sy) - (hit.ball ? R * 1.1 : 0));
+      // dotted guide in the loaded marble's colour, flowing toward the target
+      const dot = aimT > 0 ? 28 : 24;
+      G.beam.visible = true; G.beam.position.set(wx(sx), R + 2, wz(sy)); G.beam.rotation.z = -aimAngle;
+      G.beam.scale.set(len, dot, 1);
+      G.beam.material.color.copy(col3(colr));
+      G.beam.material.opacity = aimT > 0 ? 1 : aiming ? 0.95 : 0.8;
+      G.beam.material.map.repeat.set(len / (dot * (aimT > 0 ? 1.4 : 2)), 1); G.beam.material.map.offset.x -= dt * 2.5;
+      if (hit.ball) {
+        const match = hit.ball.c === cur || cur === WILD || hit.ball.c === WILD, pulse = Math.sin(time * 9);
+        G.land.visible = true; G.land.position.set(wx(hit.ball.x), R * 0.35, wz(hit.ball.y));
+        G.land.scale.setScalar(D * (match ? 1.5 : 1.3) + pulse * (match ? 5 : 2));
+        G.land.material.color.copy(col3(colr));
+        G.arrow.visible = true; G.arrow.material.color.copy(col3(colr));
+        G.arrow.position.set(wx(hit.ball.x), R * 2.6 + 12 + Math.abs(Math.sin(time * 6)) * 14, wz(hit.ball.y));
+        G.arrow.scale.setScalar(match ? 58 : 46);
+      }
     }
   }
 
