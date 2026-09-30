@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F5B416">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Naija Blast">
 <meta name="description" content="Naija Blast: a 3D Nigerian marble shooter. 100 sectors, ten bosses. Match three and break the chain.">
 <meta property="og:title" content="Naija Blast">
 <meta property="og:description" content="A 3D Nigerian marble shooter. 100 sectors, ten bosses.">
@@ -350,12 +356,36 @@
   .powers{position:fixed;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:10}
   .powers .chip{background:linear-gradient(180deg,#A8642C,#6E3A14);border:2px solid currentColor;border-radius:14px;padding:7px 11px;font-size:.66rem;font-weight:700;letter-spacing:.1em;box-shadow:0 4px 10px rgba(80,40,0,.35)}
   @media (max-width:700px){
-    .hudbar{flex-wrap:wrap;gap:6px}
-    .bar-pl{order:3;flex-basis:100%}
-    .score-pl{min-width:80px;padding:2px 10px 4px}.pl-val{font-size:1.1rem}
+    .hudbar{gap:6px}
+    .plaque{border-width:2px;border-radius:13px}
+    .score-pl{min-width:66px;padding:2px 8px 4px}.pl-label{font-size:.5rem}.pl-val{font-size:1rem}
+    .bar-pl{padding:5px 10px 7px;gap:4px}
+    .bar-pl .meter-row{font-size:.56rem;letter-spacing:.08em}
+    .bar-pl .rnd{font-size:.66rem}
+    .bar-pl .progress{height:9px}
+    .mlab{display:none}
+    #btn-music,#btn-sfx{display:none}
+    .hud-right{gap:6px}
     .goldbtn{width:38px;height:38px}
-    .lives-pl{padding:6px 10px;font-size:.85rem}
+    .lives-pl{padding:6px 7px;font-size:.72rem;letter-spacing:.06em}
+    .streak{font-size:.66rem;padding:2px 8px}
+    .powers{right:8px}
   }
+  /* short landscape phones: thinner HUD so the board gets the height */
+  @media (max-height:500px) and (orientation:landscape){
+    #hud{padding-top:calc(6px + env(safe-area-inset-top,0px))}
+    .score-pl{padding:1px 10px 3px}.pl-val{font-size:1.05rem}
+    .bar-pl{padding:4px 12px 6px}
+    .goldbtn{width:36px;height:36px}
+    .lives-pl{padding:5px 10px}
+    .swapbtn{width:70px;height:70px}.swap-next{width:26px;height:26px}
+  }
+  /* touch comfort: no double-tap zoom on buttons, no pull-to-refresh, no long-press callouts */
+  html,body{overscroll-behavior:none}
+  .menu{overscroll-behavior:contain}
+  button{touch-action:manipulation}
+  @media (max-width:520px){#menu-pause .row .btn,#menu-result .row .btn{flex:1 1 40%;padding-block:14px}}
+  body{-webkit-touch-callout:none}
 </style>
 </head>
 <body>
@@ -370,7 +400,7 @@
   <div class="hudbar">
     <div class="plaque score-pl"><span class="pl-label">Score</span><span class="pl-val" id="hud-score">0</span></div>
     <div class="plaque bar-pl">
-      <div class="meter-row"><span class="rnd" id="hud-sector">1 · Lagos Orbit</span><span><span id="hud-mlabel">Swarm cleared</span> · <span id="hud-mval">0%</span></span></div>
+      <div class="meter-row"><span class="rnd" id="hud-sector">1 · Lagos Orbit</span><span><span class="mlab"><span id="hud-mlabel">Swarm cleared</span> · </span><span id="hud-mval">0%</span></span></div>
       <div class="progress" id="hud-meterbox"><i id="hud-meter"></i></div>
     </div>
     <div class="hud-right">
@@ -563,6 +593,9 @@
       <button class="btn" id="btn-resume">Resume</button>
       <button class="btn alt" id="btn-restart">Restart</button>
       <button class="btn alt" id="btn-gfx">Graphics: High</button>
+      <button class="btn alt" id="btn-music2">Music: On</button>
+      <button class="btn alt" id="btn-sfx2">Sound: On</button>
+      <button class="btn alt" id="btn-fs" hidden>Full screen</button>
       <button class="btn alt" id="btn-quit">Quit to home</button>
     </div>
   </div>
@@ -1093,7 +1126,7 @@ function loadRun(c, opts = {}) {
     state = 'menu';
     for (let i = 0; i < 240; i++) for (const ch of chains) updateChain(ch, 1 / 30);
   } else {
-    state = 'play';
+    state = 'play'; keepAwake(true);
     $('hud').hidden = false; $('swap-btn').classList.add('show');
     showMenu(null);
     $('hud-sector').textContent = cfg.label;
@@ -1272,7 +1305,7 @@ function startDying() {
 }
 function afterDeath() {
   if (mode !== 'campaign') return endArcade('breach');
-  lives--; updateHUD();
+  lives--; updateHUD(); buzz([60, 40, 120]);
   if (lives <= 0) return campaignOver();
   state = 'respawn'; respawnT = 2.2;
   showBanner('BREACH!', `${lives} ${lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, 2.2, true);
@@ -1762,7 +1795,7 @@ async function renderBoard() {
 // ============================================================
 const MENUS = ['menu-main', 'menu-play', 'menu-map', 'menu-story', 'menu-armoury', 'menu-board', 'menu-howto', 'menu-pause', 'menu-duel', 'menu-result', 'menu-error'];
 function showMenu(id) { MENUS.forEach(m => { $(m).hidden = m !== id; }); if (state === 'menu' && renderer) layout(); }
-function hideHud() { $('hud').hidden = true; $('swap-btn').classList.remove('show'); aiming = false; layout(); }
+function hideHud() { $('hud').hidden = true; $('swap-btn').classList.remove('show'); aiming = false; keepAwake(false); layout(); }
 function toMainMenu() {
   duel = null; hideHud(); mode = 'campaign'; rngC = Math.random; rngS = Math.random;
   const total = Object.values(save.stars).reduce((a, b) => a + b, 0);
@@ -1860,14 +1893,24 @@ function showResult(o) {
   }
   showMenu('menu-result');
 }
+// keep the phone screen awake while a round is running; short buzz on Android when a life goes
+let wakeLock = null;
+function keepAwake(on) {
+  try {
+    if (on && !wakeLock && navigator.wakeLock && !document.hidden) navigator.wakeLock.request('screen').then(l => { wakeLock = l; l.addEventListener('release', () => { wakeLock = null; }); }).catch(() => {});
+    else if (!on && wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  } catch (err) {}
+}
+function buzz(p) { try { if (save.sfxOn && navigator.vibrate) navigator.vibrate(p); } catch (err) {} }
 function pauseGame() {
   if (state !== 'play') return;
+  keepAwake(false);
   state = 'pause'; aiming = false;
   $('pause-sector').textContent = cfg.label;
   $('btn-gfx').textContent = `Graphics: ${save.gfx === 'high' ? 'High' : 'Low'}`;
   showMenu('menu-pause');
 }
-function resumeGame() { if (state === 'pause') { state = 'play'; showMenu(null); } }
+function resumeGame() { if (state === 'pause') { state = 'play'; showMenu(null); keepAwake(true); } }
 
 // ---------- HUD ----------
 let chipTimer = 0;
@@ -1892,7 +1935,10 @@ function updatePowerChips(dt) {
   if (boss && boss.hasteT > 0) list.push(['haste', boss.hasteT]);
   $('hud-powers').innerHTML = list.map(([k, t]) => `<span class="chip" style="color:${POWER_INFO[k].color}">${POWER_INFO[k].label} ${Math.ceil(t)}s</span>`).join('');
 }
-function setAudioUI() { $('btn-sfx').classList.toggle('off', !save.sfxOn); $('btn-music').classList.toggle('off', !save.musicOn); }
+function setAudioUI() {
+  $('btn-sfx').classList.toggle('off', !save.sfxOn); $('btn-music').classList.toggle('off', !save.musicOn);
+  $('btn-sfx2').textContent = `Sound: ${save.sfxOn ? 'On' : 'Off'}`; $('btn-music2').textContent = `Music: ${save.musicOn ? 'On' : 'Off'}`;
+}
 
 // ---------- floating texts & banner (DOM over the 3D view) ----------
 const fxLayer = $('fx');
@@ -2127,10 +2173,26 @@ function applyTheme3D() {
   for (const gt of (G.gates || [])) gt.material.color.copy(col3(THEME.green));
   G.baseExposure = 0.95;
 }
+// Drop render resolution when frames run long, creep back up when there is headroom.
+let prCap = 1, prNow = 1, prCalm = 0, prAcc = 0, prN = 0;
+function tuneResolution(raw) {
+  if (state !== 'play' && state !== 'menu') return;
+  prAcc += raw; prN++;
+  if (prAcc < 1.5) return;
+  const avg = prAcc / prN; prAcc = 0; prN = 0; prCalm = Math.max(0, prCalm - 1.5);
+  let next = prNow;
+  if (avg > 1 / 48 && prNow > 0.75) { next = Math.max(0.75, prNow - 0.2); prCalm = 12; }
+  else if (avg < 1 / 57 && prCalm === 0 && prNow < prCap) next = Math.min(prCap, prNow + 0.1);
+  if (next !== prNow) { prNow = next; renderer.setPixelRatio(prNow); composer.setPixelRatio(prNow); layout(); }
+}
 function applyGfx() {
   const hi = save.gfx === 'high';
   renderer.shadowMap.enabled = hi; G.sun.castShadow = hi;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, hi ? 1.75 : 1));
+  if (G.eyeLight) G.eyeLight.visible = hi;
+  (G.holes || []).forEach(h => { h.pl.visible = hi; });
+  prCap = Math.min(window.devicePixelRatio || 1, hi ? 2 : 1.5);
+  prNow = Math.min(prCap, hi ? 1.5 : 1.25); prCalm = 0;
+  renderer.setPixelRatio(prNow);
   composer.setPixelRatio(renderer.getPixelRatio());
   scene.traverse(o => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.needsUpdate = true; }); });
   layout();
@@ -2160,7 +2222,7 @@ function buildShooter() {
     const geo = new THREE.ExtrudeGeometry(es, { depth: 2, bevelEnabled: false }); geo.rotateX(-Math.PI / 2);
     const e = new THREE.Mesh(geo, eyeMat); e.position.y = 19.6; head.add(e);
   }
-  const eyeLight = new THREE.PointLight(col3('#1fd286'), 0.8, 220, 2); eyeLight.position.set(20, 40, 0); head.add(eyeLight);
+  const eyeLight = new THREE.PointLight(col3('#1fd286'), 0.8, 220, 2); eyeLight.position.set(20, 40, 0); eyeLight.visible = save.gfx === 'high'; head.add(eyeLight); G.eyeLight = eyeLight;
   scene.add(g); G.shooter = g;
 }
 
@@ -2302,7 +2364,7 @@ function buildDecor(env) {
               : env === 'jungle' ? [[bush, 0.42], [palm, 0.3], [rock, 0.28]]
               : [[crystal, 0.3], [pillar, 0.22], [rock, 0.26], [pot, 0.22]];
   const pick = () => { let x = r(); for (const [f, w] of table) { if ((x -= w) <= 0) return f; } return table[0][0]; };
-  const placed = [];
+  const placed = [], deco = new THREE.Group();
   for (let tries = 0; tries < 220 && placed.length < 60; tries++) {
     const x = -300 + r() * (W + 600), y = -240 + r() * (H + 480), make = pick(), d = make();
     const clear = d.clear;
@@ -2313,7 +2375,40 @@ function buildDecor(env) {
     const sc = 0.85 + r() * 0.5; d.g.scale.setScalar(sc); d.g.rotation.y = r() * TAU;
     d.g.position.set(wx(x), 0, wz(y));
     d.g.traverse(o => { if (o.isMesh) { o.castShadow = d.clear >= 80; o.receiveShadow = false; } });
-    levelGroup.add(d.g); placed.push([x, y]);
+    deco.add(d.g); placed.push([x, y]);
+  }
+  mergeStatic(deco, levelGroup);
+}
+// Scenery never moves, so bake it into one mesh per material: ~250 draw calls become ~10 (big win on phones).
+function mergeStatic(src, dst) {
+  src.updateMatrixWorld(true);
+  const buckets = new Map();
+  src.traverse(o => {
+    if (!o.isMesh) return;
+    const key = o.material.uuid + (o.castShadow ? '|s' : '');
+    if (!buckets.has(key)) buckets.set(key, { mat: o.material, shadow: o.castShadow, parts: [] });
+    const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+    g.applyMatrix4(o.matrixWorld); buckets.get(key).parts.push(g);
+  });
+  const seen = new Set();
+  src.traverse(o => { if (o.isMesh && !seen.has(o.geometry)) { seen.add(o.geometry); o.geometry.dispose(); } });
+  for (const { mat, shadow, parts } of buckets.values()) {
+    let n = 0; for (const g of parts) n += g.attributes.position.count;
+    const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2);
+    let o = 0;
+    for (const g of parts) {
+      const c = g.attributes.position.count;
+      pos.set(g.attributes.position.array, o * 3);
+      if (g.attributes.normal) nor.set(g.attributes.normal.array, o * 3);
+      if (g.attributes.uv) uv.set(g.attributes.uv.array, o * 2);
+      o += c; g.dispose();
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    geo.computeBoundingSphere();
+    const m = new THREE.Mesh(geo, mat); m.castShadow = shadow; m.receiveShadow = false; dst.add(m);
   }
 }
 function build3DLevel() {
@@ -2351,7 +2446,7 @@ function build3DLevel() {
     const torus = new THREE.Mesh(new THREE.TorusGeometry(R * 2.4, 9, 14, 48), rimMat); torus.rotation.x = Math.PI / 2; torus.position.y = 5; torus.castShadow = true; hole.add(torus);
     const teeth = new THREE.Group(); teeth.position.y = 8; hole.add(teeth);
     for (let i = 0; i < 8; i++) { const a = i * TAU / 8, c = new THREE.Mesh(new THREE.ConeGeometry(6, 18, 6), rimMat); c.position.set(Math.cos(a) * R * 2.05, 0, Math.sin(a) * R * 2.05); c.lookAt(0, 0, 0); c.rotateX(Math.PI / 2); teeth.add(c); }
-    const pl = new THREE.PointLight(col3('#ff4f5e'), 0.8, 320, 2); pl.position.y = 50; hole.add(pl);
+    const pl = new THREE.PointLight(col3('#ff4f5e'), 0.8, 320, 2); pl.position.y = 50; pl.visible = save.gfx === 'high'; hole.add(pl);
     levelGroup.add(hole); G.holes.push({ sw, teeth, pl });
     const gate = new THREE.Mesh(new THREE.TorusGeometry(R * 1.7, 6, 10, 32), rimMat);
     gate.position.set(wx(t.px[0]), R, wz(t.py[0])); gate.rotation.x = Math.PI / 2; levelGroup.add(gate); G.gates.push(gate);
@@ -2382,7 +2477,9 @@ function layout() {
   } else {
     homeFit = null;
     camera.aspect = vw / vh; camera.updateProjectionMatrix();
-    fitCamera(vw, vh, Math.max(hudH, 24) + 8, 14);
+    // phones: keep the bottom strip clear for the swap button so the track never hides under a thumb
+    const tall = vh > vw, sw = $('swap-btn').offsetWidth || 86;
+    fitCamera(vw, vh, Math.max(hudH, 24) + 8, 14, tall ? sw + 44 : 14, tall ? 14 : sw + 34);
   }
   if (G.backdropCanvas) paintBackdrop();
 }
@@ -2392,24 +2489,43 @@ function applyHomeOffset(r) {
   r = r || $('demo-window').getBoundingClientRect();
   camera.setViewOffset(homeFit.w, homeFit.h, -r.left, -r.top, vw, vh); camera.updateProjectionMatrix();
 }
-function fitCamera(fw = vw, fh = vh, padTop = 32, pad = 14) {
+// Frame what is actually on the board (tracks, shooter, boss), not the whole world rectangle,
+// so marbles stay big on narrow phone screens.
+function contentBounds() {
+  let x0 = shooter.x - 70, x1 = shooter.x + 70, y0 = shooter.y - 70, y1 = shooter.y + 70;
+  for (const t of tracks) for (let k = 0; k < t.N; k += 3) {
+    const x = t.px[k], y = t.py[k];
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  if (boss) { const r = boss.r + 40; x0 = Math.min(x0, boss.x - r); x1 = Math.max(x1, boss.x + r); y0 = Math.min(y0, boss.y - r); y1 = Math.max(y1, boss.y + r); }
+  const m = 54;
+  return { x0: x0 - m, x1: x1 + m, y0: y0 - m, y1: y1 + m };
+}
+function fitCamera(fw = vw, fh = vh, padTop = 32, pad = 14, padBottom = pad, padRight = pad) {
   camTilt = portrait ? 0.16 : 0.22;
-  const top = 1 - 2 * padTop / fh, bottom = -1 + 2 * pad / fh, xl = 1 - 2 * pad / fw;
-  const bw = W / 2 + 46, bh = H / 2 + 46;
-  const corners = [[-bw, -bh], [bw, -bh], [-bw, bh], [bw, bh]].map(([x, z]) => new THREE.Vector3(x, 0, z));
-  const place = (d, tz) => { camera.position.set(0, Math.cos(camTilt) * d, tz + Math.sin(camTilt) * d); camera.lookAt(0, 0, tz); camera.updateMatrixWorld(); };
+  const top = 1 - 2 * padTop / fh, bottom = -1 + 2 * padBottom / fh, left = -1 + 2 * pad / fw, right = 1 - 2 * padRight / fw;
+  const b = tracks.length ? contentBounds() : { x0: -46, x1: W + 46, y0: -46, y1: H + 46 };
+  const cx = (b.x0 + b.x1) / 2 - W / 2;
+  const corners = [[wx(b.x0), wz(b.y0)], [wx(b.x1), wz(b.y0)], [wx(b.x0), wz(b.y1)], [wx(b.x1), wz(b.y1)]].map(([x, z]) => new THREE.Vector3(x, 0, z));
+  let ox = 0;
+  const place = (d, tz) => { camera.position.set(cx + ox, Math.cos(camTilt) * d, tz + Math.sin(camTilt) * d); camera.lookAt(cx + ox, 0, tz); camera.updateMatrixWorld(); };
   const ext = () => { let x0 = 9, x1 = -9, y0 = 9, y1 = -9; for (const c of corners) { const p = c.clone().project(camera); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); } return { x0, x1, y0, y1 }; };
-  let tz = 0, dist = 2000;
+  // fit to the size of the free area first, then slide the camera so the board sits in it
+  const halfW = (right - left) / 2, halfH = (top - bottom) / 2;
+  let tz = (b.y0 + b.y1) / 2 - H / 2, dist = 2000;
   for (let it = 0; it < 4; it++) {
-    let lo = 300, hi = 20000;
-    for (let k = 0; k < 32; k++) { const mid = (lo + hi) / 2; place(mid, tz); const e = ext(); if (e.x0 >= -xl && e.x1 <= xl && e.y0 >= bottom && e.y1 <= top) hi = mid; else lo = mid; }
+    let lo = 150, hi = 20000;
+    for (let k = 0; k < 32; k++) { const mid = (lo + hi) / 2; place(mid, tz); const e = ext(); if ((e.x1 - e.x0) / 2 <= halfW && (e.y1 - e.y0) / 2 <= halfH) hi = mid; else lo = mid; }
     dist = hi; place(dist, tz);
-    const e = ext(), want = (top + bottom) / 2, have = (e.y0 + e.y1) / 2;
-    place(dist, tz + 10); const e2 = ext(), d = ((e2.y0 + e2.y1) / 2 - have) / 10;
-    if (Math.abs(d) > 1e-9) tz += (want - have) / d;
+    const e = ext(), wantY = (top + bottom) / 2, haveY = (e.y0 + e.y1) / 2;
+    place(dist, tz + 10); const e2 = ext(), dY = ((e2.y0 + e2.y1) / 2 - haveY) / 10;
+    if (Math.abs(dY) > 1e-9) tz += (wantY - haveY) / dY;
+    place(dist, tz); const ea = ext(), wantX = (left + right) / 2, haveX = (ea.x0 + ea.x1) / 2;
+    ox += 10; place(dist, tz); const eb = ext(), dX = ((eb.x0 + eb.x1) / 2 - haveX) / 10; ox -= 10;
+    if (Math.abs(dX) > 1e-9) ox += (wantX - haveX) / dX;
   }
   place(dist, tz);
-  camBase = camera.position.clone(); camTarget = new THREE.Vector3(0, 0, tz);
+  camBase = camera.position.clone(); camTarget = new THREE.Vector3(cx + ox, 0, tz);
 }
 
 // ---------- per-frame render ----------
@@ -2643,6 +2759,24 @@ function bindInput() {
   $('btn-pause').addEventListener('click', pauseGame);
   $('btn-sfx').addEventListener('click', () => { ensureAudio(); save.sfxOn = !save.sfxOn; setAudioUI(); persist(); });
   $('btn-music').addEventListener('click', () => { ensureAudio(); save.musicOn = !save.musicOn; setAudioUI(); persist(); });
+  $('btn-sfx2').addEventListener('click', () => $('btn-sfx').click());
+  $('btn-music2').addEventListener('click', () => $('btn-music').click());
+  const fsEl = document.documentElement;
+  const fsReq = fsEl.requestFullscreen || fsEl.webkitRequestFullscreen;
+  if (fsReq && (document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+    const fsOn = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const fsLabel = () => { $('btn-fs').textContent = fsOn() ? 'Exit full screen' : 'Full screen'; };
+    $('btn-fs').hidden = false; fsLabel();
+    $('btn-fs').addEventListener('click', () => {
+      try {
+        const r = fsOn() ? (document.exitFullscreen || document.webkitExitFullscreen).call(document) : fsReq.call(fsEl, { navigationUI: 'hide' });
+        if (r && r.catch) r.catch(() => {});
+      } catch (err) {}
+    });
+    document.addEventListener('fullscreenchange', fsLabel); document.addEventListener('webkitfullscreenchange', fsLabel);
+  }
+  // phones report their new size a beat after rotating; re-fit once it settles
+  addEventListener('orientationchange', () => setTimeout(() => dispatchEvent(new Event('resize')), 250));
   $('swap-btn').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); ensureAudio(); swap(); });
 }
 
@@ -2670,9 +2804,15 @@ function boot() {
   initBoard();
   let last = performance.now();
   function frame(now) {
-    const dt = Math.max(0, Math.min(0.033, (now - last) / 1000)); last = now;
-    if (state !== 'pause') update(dt);
+    const raw = Math.max(0, (now - last) / 1000); last = now;
+    const dt = Math.min(0.05, raw);
+    if (state !== 'pause') {
+      // slow phones: keep real-time speed, but in small steps so fast shots never skip through marbles
+      const n = Math.ceil(dt / 0.017) || 1;
+      for (let i = 0; i < n; i++) update(dt / n);
+    }
     render3D(state === 'pause' ? 0 : dt);
+    if (raw < 0.25) tuneResolution(raw);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
