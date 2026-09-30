@@ -1,10 +1,10 @@
-/* Steeze — everything is stored on the phone (IndexedDB).
+/* Backstage — everything is stored on the phone (IndexedDB).
    Only "Style me" talks to the network: it sends small thumbnails to the
-   Cloudflare Worker in /steeze-api, which asks Claude for outfit ideas. */
+   Cloudflare Worker in /backstage-api, which asks Claude for outfit ideas. */
 (function () {
   "use strict";
 
-  var CONFIG = window.STEEZE_CONFIG || {};
+  var CONFIG = window.BACKSTAGE_CONFIG || {};
   var WHATSAPP_NUMBER = "2348118494314";
   var LAGOS = { lat: 6.5244, lon: 3.3792, name: "Lagos" };
 
@@ -22,7 +22,7 @@
   function openDb() {
     if (!dbPromise) {
       dbPromise = new Promise(function (resolve, reject) {
-        var req = indexedDB.open("steeze", 1);
+        var req = indexedDB.open("backstage", 1);
         req.onupgradeneeded = function () {
           var db = req.result;
           db.createObjectStore("items", { keyPath: "id" });
@@ -380,7 +380,7 @@
   var lastSuggestions = [];
   function suggest() {
     showErr("#style-error", "");
-    if (!CONFIG.apiUrl) return showErr("#style-error", "The AI stylist isn't connected yet. Set apiUrl in steeze/config.js to your Cloudflare Worker address.");
+    if (!CONFIG.apiUrl) return showErr("#style-error", "The AI stylist isn't connected yet. Set apiUrl in backstage/config.js to your Cloudflare Worker address.");
     if (state.items.length < 2) return showErr("#style-error", "Add at least 2 items (e.g. a top and a bottom) to your wardrobe first.");
 
     var date = $("#style-date").value || iso(new Date());

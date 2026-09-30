@@ -1,4 +1,4 @@
-// Steeze API — a Cloudflare Worker that keeps the Anthropic API key
+// Backstage API — a Cloudflare Worker that keeps the Anthropic API key
 // server-side and turns a user's wardrobe photos into outfit suggestions.
 //
 // POST /suggest
@@ -193,7 +193,7 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
-    if (url.pathname === "/" && request.method === "GET") return json({ ok: true, service: "steeze-api" }, 200, cors);
+    if (url.pathname === "/" && request.method === "GET") return json({ ok: true, service: "backstage-api" }, 200, cors);
     if (url.pathname === "/suggest" && request.method === "POST") return suggest(request, env, cors);
     return json({ error: "Not found" }, 404, cors);
   },

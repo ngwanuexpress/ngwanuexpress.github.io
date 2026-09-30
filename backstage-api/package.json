@@ -1,5 +1,5 @@
 {
-  "name": "steeze-api",
+  "name": "backstage-api",
   "private": true,
   "type": "module",
   "scripts": {

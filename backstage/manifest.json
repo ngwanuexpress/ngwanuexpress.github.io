@@ -1,6 +1,6 @@
 {
-  "name": "Steeze",
-  "short_name": "Steeze",
+  "name": "Backstage",
+  "short_name": "Backstage",
   "description": "Snap your clothes, plan outfits and get AI outfit ideas.",
   "start_url": "./?source=pwa",
   "scope": "./",
