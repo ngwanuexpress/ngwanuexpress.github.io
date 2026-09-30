@@ -1,4 +1,4 @@
-const CACHE = "backstage-v2";
+const CACHE = "backstage-v3";
 const SHELL = ["./", "app.js", "config.js", "manifest.json", "icons/logo.svg"];
 
 self.addEventListener("install", (e) => {

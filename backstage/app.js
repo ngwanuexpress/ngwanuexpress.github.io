@@ -445,6 +445,21 @@
     return saveOutfit(o).then(function () { renderOutfits(); return o; });
   }
 
+  /* ---------- welcome (first visit only) ---------- */
+  var WELCOME_KEY = "backstage.welcomed";
+  function welcomed() { try { return localStorage.getItem(WELCOME_KEY) === "1"; } catch (e) { return false; } }
+  function maybeWelcome() {
+    if (welcomed() || state.items.length) return;
+    show($("#welcome"), true);
+    $("#welcome-start").focus();
+  }
+  function closeWelcome(addItem) {
+    try { localStorage.setItem(WELCOME_KEY, "1"); } catch (e) { /* storage blocked: show again next time */ }
+    show($("#welcome"), false);
+    go("closet");
+    if (addItem) openAdd();
+  }
+
   /* ---------- wiring ---------- */
   function renderAll() { renderCloset(); renderOutfits(); renderCalendar(); }
 
@@ -521,6 +536,7 @@
         t.disabled = true;
       });
     }
+    if (t.id === "welcome-start" || t.id === "welcome-skip") return closeWelcome(t.id === "welcome-start");
     if (t.id === "suggest-btn") return suggest();
     if (t.id === "use-loc") {
       t.disabled = true;
@@ -537,6 +553,9 @@
     }
   });
 
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !$("#welcome").hidden) closeWelcome(false);
+  });
   $("#photo-input").addEventListener("change", function (e) { onPhoto(e.target.files[0]); e.target.value = ""; });
   $("#add-form").addEventListener("submit", saveItem);
   $("#outfit-form").addEventListener("submit", submitBuilder);
@@ -551,6 +570,7 @@
     r[2].forEach(function (p) { state.plans[p.date] = p.outfitId; });
     renderAll();
     go(location.hash.slice(1));
+    maybeWelcome();
   }).catch(function () {
     $("#closet-grid").innerHTML = '<div class="empty"><b>Storage unavailable</b>Your browser is blocking storage (private mode?). Open this page in a normal tab.</div>';
   });
