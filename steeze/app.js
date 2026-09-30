@@ -1,10 +1,10 @@
-/* NGWANU Closet — everything is stored on the phone (IndexedDB).
+/* Steeze — everything is stored on the phone (IndexedDB).
    Only "Style me" talks to the network: it sends small thumbnails to the
-   Cloudflare Worker in /closet-api, which asks Claude for outfit ideas. */
+   Cloudflare Worker in /steeze-api, which asks Claude for outfit ideas. */
 (function () {
   "use strict";
 
-  var CONFIG = window.CLOSET_CONFIG || {};
+  var CONFIG = window.STEEZE_CONFIG || {};
   var WHATSAPP_NUMBER = "2348118494314";
   var LAGOS = { lat: 6.5244, lon: 3.3792, name: "Lagos" };
 
@@ -22,7 +22,7 @@
   function openDb() {
     if (!dbPromise) {
       dbPromise = new Promise(function (resolve, reject) {
-        var req = indexedDB.open("ngwanu-closet", 1);
+        var req = indexedDB.open("steeze", 1);
         req.onupgradeneeded = function () {
           var db = req.result;
           db.createObjectStore("items", { keyPath: "id" });
@@ -148,7 +148,7 @@
     var grid = $("#closet-grid");
     if (!state.items.length) {
       grid.style.display = "block";
-      grid.innerHTML = '<div class="empty"><b>Your closet is empty</b>Snap a photo of each piece you wear — shirts, trousers, native wear, shoes. Plain background works best.<div style="margin-top:14px"><button class="btn" data-action="add-item">+ Add your first item</button></div></div>';
+      grid.innerHTML = '<div class="empty"><b>Your wardrobe is empty</b>Snap a photo of each piece you wear — shirts, trousers, native wear, shoes. Plain background works best.<div style="margin-top:14px"><button class="btn" data-action="add-item">+ Add your first item</button></div></div>';
       return;
     }
     grid.style.display = "";
@@ -224,7 +224,7 @@
   }
 
   function deleteItem(id) {
-    if (!confirm("Delete this item from your closet?")) return;
+    if (!confirm("Delete this item from your wardrobe?")) return;
     var jobs = [DB.del("items", id)];
     state.items = state.items.filter(function (i) { return i.id !== id; });
     state.outfits.forEach(function (o) {
@@ -280,7 +280,7 @@
 
   var picked = [];
   function openBuilder() {
-    if (state.items.length < 2) { alert("Add at least 2 items to your closet first."); return; }
+    if (state.items.length < 2) { alert("Add at least 2 items to your wardrobe first."); return; }
     picked = [];
     $("#outfit-form").reset();
     show($("#outfit-error"), false);
@@ -380,8 +380,8 @@
   var lastSuggestions = [];
   function suggest() {
     showErr("#style-error", "");
-    if (!CONFIG.apiUrl) return showErr("#style-error", "The AI stylist isn't connected yet. Set apiUrl in closet/config.js to your Cloudflare Worker address.");
-    if (state.items.length < 2) return showErr("#style-error", "Add at least 2 items (e.g. a top and a bottom) to your closet first.");
+    if (!CONFIG.apiUrl) return showErr("#style-error", "The AI stylist isn't connected yet. Set apiUrl in steeze/config.js to your Cloudflare Worker address.");
+    if (state.items.length < 2) return showErr("#style-error", "Add at least 2 items (e.g. a top and a bottom) to your wardrobe first.");
 
     var date = $("#style-date").value || iso(new Date());
     var btn = $("#suggest-btn");
@@ -422,7 +422,7 @@
   function renderSuggestions(res, date) {
     var el = $("#suggestions");
     var html = "";
-    if (!lastSuggestions.length) html += '<div class="notice">The stylist couldn\'t build an outfit from your closet for this occasion.</div>';
+    if (!lastSuggestions.length) html += '<div class="notice">The stylist couldn\'t build an outfit from your wardrobe for this occasion.</div>';
     html += lastSuggestions.map(function (o, idx) {
       var items = o.item_ids.map(itemById).filter(Boolean);
       return '<article class="card"><h3>' + esc(o.title) + "</h3>" + strip(items) +

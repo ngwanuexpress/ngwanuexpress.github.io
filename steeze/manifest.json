@@ -1,6 +1,6 @@
 {
-  "name": "NGWANU Closet",
-  "short_name": "Closet",
+  "name": "Steeze",
+  "short_name": "Steeze",
   "description": "Snap your clothes, plan outfits and get AI outfit ideas.",
   "start_url": "./?source=pwa",
   "scope": "./",

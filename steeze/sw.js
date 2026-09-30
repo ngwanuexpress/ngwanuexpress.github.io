@@ -1,4 +1,4 @@
-const CACHE = "ngwanu-closet-v1";
+const CACHE = "steeze-v1";
 const SHELL = ["./", "app.js", "config.js", "manifest.json"];
 
 self.addEventListener("install", (e) => {
@@ -8,7 +8,7 @@ self.addEventListener("install", (e) => {
 
 self.addEventListener("activate", (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith("ngwanu-closet") && k !== CACHE).map((k) => caches.delete(k))))
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith("steeze") && k !== CACHE).map((k) => caches.delete(k))))
   );
   self.clients.claim();
 });

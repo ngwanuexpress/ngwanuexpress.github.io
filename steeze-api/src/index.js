@@ -1,5 +1,5 @@
-// NGWANU Closet API — a Cloudflare Worker that keeps the Anthropic API key
-// server-side and turns a user's closet photos into outfit suggestions.
+// Steeze API — a Cloudflare Worker that keeps the Anthropic API key
+// server-side and turns a user's wardrobe photos into outfit suggestions.
 //
 // POST /suggest
 //   { items: [{ id, name, category, color, tags, image }], occasion, date, weather, note }
@@ -36,13 +36,13 @@ const OUTFIT_SCHEMA = {
 };
 
 const SYSTEM = `You are a friendly personal stylist for people in Nigeria, mostly Lagos.
-You receive photos of clothes from the user's own closet, each labelled with an item id.
+You receive photos of clothes from the user's own wardrobe, each labelled with an item id.
 Suggest up to 3 complete outfits for the occasion, using ONLY the item ids you were given.
-Each outfit should normally have a top and bottom (or a one-piece such as a dress, kaftan or agbada), plus shoes if the closet has any.
+Each outfit should normally have a top and bottom (or a one-piece such as a dress, kaftan or agbada), plus shoes if the wardrobe has any.
 Consider the weather (Lagos heat, humidity and rain), the occasion's dress code, and Nigerian norms — e.g. native wear for owambe or traditional events, modest options for church or mosque, smart looks for office.
 Keep "why" to one or two short sentences and "tip" to one practical styling tip.
 In "missing", briefly name one item that would unlock more outfits, or return an empty string if nothing is needed.
-If the closet cannot make a sensible outfit, return an empty outfits list and explain in "missing".`;
+If the wardrobe cannot make a sensible outfit, return an empty outfits list and explain in "missing".`;
 
 function clean(value, max = MAX_TEXT) {
   return typeof value === "string" ? value.slice(0, max).trim() : "";
@@ -178,7 +178,7 @@ async function suggest(request, env, cors) {
     return json({ error: "The stylist gave an unexpected answer. Please try again." }, 502, cors);
   }
 
-  // Drop any ids the model invented so the app only ever shows real closet items.
+  // Drop any ids the model invented so the app only ever shows real wardrobe items.
   const known = new Set(items.map((i) => i.id));
   const outfits = (result.outfits || [])
     .map((o) => ({ ...o, item_ids: (o.item_ids || []).filter((id) => known.has(id)) }))
@@ -193,7 +193,7 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
-    if (url.pathname === "/" && request.method === "GET") return json({ ok: true, service: "ngwanu-closet-api" }, 200, cors);
+    if (url.pathname === "/" && request.method === "GET") return json({ ok: true, service: "steeze-api" }, 200, cors);
     if (url.pathname === "/suggest" && request.method === "POST") return suggest(request, env, cors);
     return json({ error: "Not found" }, 404, cors);
   },
