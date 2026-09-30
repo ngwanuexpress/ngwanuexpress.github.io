@@ -1,0 +1,14 @@
+name = "backstage-api"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Sites allowed to call this API from a browser (comma-separated, no trailing slash).
+# Add your Cloudflare Pages address here once you have it, e.g. https://backstage-app.pages.dev
+ALLOWED_ORIGINS = "https://ngwanuexpress.github.io,http://localhost:8788,http://127.0.0.1:8788"
+MODEL = "claude-opus-5-5"
+EFFORT = "low"
+
+# The API key is a secret, never put it in this file. Set it with:
+#   npx wrangler secret put ANTHROPIC_API_KEY
