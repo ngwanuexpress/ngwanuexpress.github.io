@@ -1,0 +1,9 @@
+{
+  // Naija Blast: static game served by Cloudflare (Workers static assets)
+  "name": "naija-blast",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "single-page-application"
+  }
+}
